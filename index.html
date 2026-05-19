@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A focused 72-hour website refresh, lead capture, and analytics package for local service businesses.">
+    <meta property="og:title" content="72-Hour Lead Sprint">
+    <meta property="og:description" content="A practical website refresh, lead capture, and analytics sprint for local service businesses.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="assets/hero-local-business.jpg">
+    <title>72-Hour Lead Sprint</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="72-Hour Lead Sprint home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>Lead Sprint</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#offer">Offer</a>
+        <a href="#calculator">ROI</a>
+        <a href="#console">Console</a>
+        <a href="#delivery">Delivery</a>
+        <a href="#start">Start</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="top">
+        <div class="hero-shade" aria-hidden="true"></div>
+        <div class="hero-inner">
+          <p class="eyebrow">For local service businesses with an outdated site</p>
+          <h1>72-Hour Lead Sprint</h1>
+          <p class="hero-copy">
+            Replace a stale website with a fast mobile page, a clear offer, a working lead form,
+            analytics, and a simple follow-up workflow in three working days.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#start">Request a pilot</a>
+            <a class="button button-secondary" href="#calculator">Estimate payback</a>
+          </div>
+          <dl class="hero-stats" aria-label="Sprint details">
+            <div>
+              <dt>3 days</dt>
+              <dd>fixed delivery window</dd>
+            </div>
+            <div>
+              <dt>$750</dt>
+              <dd>pilot build price</dd>
+            </div>
+            <div>
+              <dt>1 page</dt>
+              <dd>focused conversion path</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="signal-strip" aria-label="Included in the sprint">
+        <div class="signal-item">
+          <strong>Mobile refresh</strong>
+          <span>fast layout, clearer calls to action, trust signals</span>
+        </div>
+        <div class="signal-item">
+          <strong>Lead capture</strong>
+          <span>quote form, direct contact path, routing to inbox</span>
+        </div>
+        <div class="signal-item">
+          <strong>Measurement</strong>
+          <span>analytics events, conversion notes, next-step report</span>
+        </div>
+      </section>
+
+      <section class="section section-tight" id="offer">
+        <div class="section-heading">
+          <p class="eyebrow">The offer</p>
+          <h2>A narrow package businesses can say yes to quickly.</h2>
+          <p>
+            This is not a vague agency pitch. It sells one outcome: more qualified inquiries from the
+            website they already have, with a visible improvement by the end of the week.
+          </p>
+        </div>
+
+        <div class="offer-grid">
+          <article class="offer-card">
+            <span class="card-number">01</span>
+            <h3>Conversion teardown</h3>
+            <p>
+              Review the current site for mobile friction, missing trust, weak calls to action,
+              slow pages, and unclear service positioning.
+            </p>
+          </article>
+          <article class="offer-card">
+            <span class="card-number">02</span>
+            <h3>One-page rebuild</h3>
+            <p>
+              Ship a clean page for the main money service, with proof, service area, quote request,
+              phone/email paths, and simple copy.
+            </p>
+          </article>
+          <article class="offer-card">
+            <span class="card-number">03</span>
+            <h3>Lead workflow</h3>
+            <p>
+              Connect the form to email, write a response template, log submissions, and add
+              measurement events for calls and requests.
+            </p>
+          </article>
+          <article class="offer-card">
+            <span class="card-number">04</span>
+            <h3>30-day action list</h3>
+            <p>
+              Hand over a short list of fixes that can improve conversion, reviews, search visibility,
+              and follow-up without bloating the pilot.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section section-band" id="calculator">
+        <div class="section-heading">
+          <p class="eyebrow">Payback math</p>
+          <h2>Show the business owner the money case before they buy.</h2>
+          <p>
+            Use this in sales calls to frame the sprint around a few extra booked jobs, not around
+            design taste.
+          </p>
+        </div>
+
+        <div class="calculator-shell">
+          <form class="calculator" aria-label="Lead sprint ROI calculator">
+            <label class="range-row" for="visits">
+              <span>Monthly website visits</span>
+              <strong data-value-for="visits">600</strong>
+              <input id="visits" name="visits" type="range" min="100" max="5000" step="100" value="600">
+            </label>
+
+            <label class="range-row" for="conversion">
+              <span>Current inquiry rate</span>
+              <strong data-value-for="conversion">2.0%</strong>
+              <input id="conversion" name="conversion" type="range" min="0.5" max="12" step="0.5" value="2">
+            </label>
+
+            <label class="range-row" for="closeRate">
+              <span>Close rate on inquiries</span>
+              <strong data-value-for="closeRate">35%</strong>
+              <input id="closeRate" name="closeRate" type="range" min="5" max="90" step="5" value="35">
+            </label>
+
+            <label class="range-row" for="jobValue">
+              <span>Average gross value per job</span>
+              <strong data-value-for="jobValue">$650</strong>
+              <input id="jobValue" name="jobValue" type="range" min="100" max="5000" step="50" value="650">
+            </label>
+          </form>
+
+          <aside class="roi-panel" aria-live="polite">
+            <div>
+              <span class="result-label">Estimated extra monthly revenue</span>
+              <strong id="extraRevenue">$3,413</strong>
+            </div>
+            <div>
+              <span class="result-label">Extra inquiries per month</span>
+              <strong id="extraLeads">15</strong>
+            </div>
+            <div>
+              <span class="result-label">Pilot payback estimate</span>
+              <strong id="payback">0.2 months</strong>
+            </div>
+            <p id="roiNarrative">
+              A small conversion lift can pay for the pilot quickly when one booked job is worth a few
+              hundred dollars or more.
+            </p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section" id="console">
+        <div class="section-heading">
+          <p class="eyebrow">Prospect console</p>
+          <h2>Turn website problems into a sellable audit.</h2>
+          <p>
+            Score a prospect, generate a sharp outreach angle, save the lead locally, and export the
+            list when you are ready to work a pipeline.
+          </p>
+        </div>
+
+        <div class="console-layout">
+          <form class="audit-form" id="auditForm">
+            <div class="field-grid">
+              <label>
+                <span>Business</span>
+                <input id="auditBusiness" name="auditBusiness" type="text" placeholder="Brightside HVAC" required>
+              </label>
+              <label>
+                <span>Website</span>
+                <input id="auditWebsite" name="auditWebsite" type="url" placeholder="https://example.com">
+              </label>
+              <label>
+                <span>Niche</span>
+                <select id="auditNiche" name="auditNiche">
+                  <option value="home services">Home services</option>
+                  <option value="health and wellness">Health and wellness</option>
+                  <option value="legal">Legal</option>
+                  <option value="auto services">Auto services</option>
+                  <option value="events">Events</option>
+                  <option value="professional services">Professional services</option>
+                </select>
+              </label>
+              <label>
+                <span>Estimated job value</span>
+                <input id="auditValue" name="auditValue" type="number" min="100" step="50" value="650">
+              </label>
+            </div>
+
+            <fieldset class="audit-checks">
+              <legend>Visible lead leaks</legend>
+              <label>
+                <input type="checkbox" name="leadLeak" value="No clear call or quote action above the fold" data-weight="18" checked>
+                <span>No clear call or quote action above the fold</span>
+              </label>
+              <label>
+                <input type="checkbox" name="leadLeak" value="Mobile layout feels hard to scan" data-weight="16" checked>
+                <span>Mobile layout feels hard to scan</span>
+              </label>
+              <label>
+                <input type="checkbox" name="leadLeak" value="Reviews or proof are missing near the offer" data-weight="14">
+                <span>Reviews or proof are missing near the offer</span>
+              </label>
+              <label>
+                <input type="checkbox" name="leadLeak" value="Quote form is buried or asks too much" data-weight="18">
+                <span>Quote form is buried or asks too much</span>
+              </label>
+              <label>
+                <input type="checkbox" name="leadLeak" value="No obvious call or form tracking" data-weight="20">
+                <span>No obvious call or form tracking</span>
+              </label>
+            </fieldset>
+
+            <div class="console-actions">
+              <button class="button button-primary" type="submit">Score prospect</button>
+              <button class="button button-light" id="copyAuditEmail" type="button">Copy email</button>
+              <button class="button button-light" id="saveProspect" type="button">Save lead</button>
+            </div>
+            <p class="form-note" id="auditNote" role="status"></p>
+          </form>
+
+          <aside class="audit-output" aria-live="polite">
+            <div class="score-ring">
+              <span id="auditScore">66</span>
+              <small>priority score</small>
+            </div>
+            <div>
+              <span class="result-label">Recommended angle</span>
+              <strong id="auditAngle">Mobile quote path cleanup</strong>
+            </div>
+            <div>
+              <span class="result-label">Suggested first line</span>
+              <p id="auditLine">
+                I noticed your mobile page makes visitors work harder than they should to request a quote.
+              </p>
+            </div>
+            <div>
+              <span class="result-label">Next action</span>
+              <p id="auditNext">Send a short teardown email and offer a 15-minute review this week.</p>
+            </div>
+          </aside>
+        </div>
+
+        <div class="pipeline-panel">
+          <div class="pipeline-head">
+            <h3>Saved prospect pipeline</h3>
+            <button class="button button-light" id="exportProspects" type="button">Export CSV</button>
+          </div>
+          <div class="table-wrap">
+            <table class="pipeline-table">
+              <thead>
+                <tr>
+                  <th>Business</th>
+                  <th>Niche</th>
+                  <th>Score</th>
+                  <th>Angle</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="prospectRows">
+                <tr>
+                  <td colspan="5">No saved prospects yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="delivery">
+        <div class="section-heading">
+          <p class="eyebrow">Delivery system</p>
+          <h2>Three days, four visible milestones.</h2>
+        </div>
+
+        <div class="timeline">
+          <article>
+            <span>Day 0</span>
+            <h3>Intake and access</h3>
+            <p>Collect site URL, service priority, brand assets, account access, and three competitors.</p>
+          </article>
+          <article>
+            <span>Day 1</span>
+            <h3>Audit and copy</h3>
+            <p>Find the main conversion blockers, rewrite the offer, and map the one-page flow.</p>
+          </article>
+          <article>
+            <span>Day 2</span>
+            <h3>Build and connect</h3>
+            <p>Implement the page, form, analytics events, inbox routing, and basic performance fixes.</p>
+          </article>
+          <article>
+            <span>Day 3</span>
+            <h3>Launch and handoff</h3>
+            <p>Verify mobile, test the form, record changes, and deliver the 30-day action list.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section section-band pricing-section">
+        <div class="section-heading">
+          <p class="eyebrow">Packages</p>
+          <h2>Start with pilots, convert the best clients into retainers.</h2>
+        </div>
+
+        <div class="pricing-grid">
+          <article class="price-card">
+            <h3>Pilot Sprint</h3>
+            <p class="price">$750</p>
+            <p>One service page, one lead form, one analytics setup, one handoff report.</p>
+            <a class="text-link" href="#start">Sell this first</a>
+          </article>
+          <article class="price-card featured">
+            <h3>Growth Sprint</h3>
+            <p class="price">$1,500</p>
+            <p>Pilot scope plus review capture, email response templates, and two extra page sections.</p>
+            <a class="text-link" href="#start">Use after proof</a>
+          </article>
+          <article class="price-card">
+            <h3>Care Plan</h3>
+            <p class="price">$250/mo</p>
+            <p>Monthly edits, uptime checks, analytics notes, form testing, and small conversion fixes.</p>
+            <a class="text-link" href="#start">Offer at handoff</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="section proof-section">
+        <div class="section-heading">
+          <p class="eyebrow">Sales angle</p>
+          <h2>Lead with a practical promise.</h2>
+        </div>
+
+        <div class="proof-layout">
+          <div class="proof-copy">
+            <p>
+              The pilot promise is simple: if the form, mobile page, and analytics events are not
+              verified by the end of day three, the fee pauses until those items are complete.
+            </p>
+            <ul class="check-list">
+              <li>Easy for owners to understand</li>
+              <li>Small enough to buy without a long procurement process</li>
+              <li>Concrete enough to fulfill reliably</li>
+              <li>Good path into recurring maintenance</li>
+            </ul>
+          </div>
+          <div class="scoreboard" aria-label="Pilot scorecard example">
+            <div>
+              <span>Before</span>
+              <strong>unclear CTA</strong>
+            </div>
+            <div>
+              <span>After</span>
+              <strong>quote path live</strong>
+            </div>
+            <div>
+              <span>Before</span>
+              <strong>no event data</strong>
+            </div>
+            <div>
+              <span>After</span>
+              <strong>calls tracked</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-tight" id="start">
+        <div class="section-heading">
+          <p class="eyebrow">Start a pilot</p>
+          <h2>Draft the first client email from the page.</h2>
+          <p>
+            Fill this with a real prospect while reviewing their site. It opens a prepared email you
+            can personalize before sending.
+          </p>
+        </div>
+
+        <form class="intake-form" id="intakeForm">
+          <label>
+            <span>Business name</span>
+            <input id="businessName" name="businessName" type="text" placeholder="Example Plumbing" required>
+          </label>
+          <label>
+            <span>Website URL</span>
+            <input id="websiteUrl" name="websiteUrl" type="url" placeholder="https://example.com">
+          </label>
+          <label>
+            <span>Main service</span>
+            <input id="mainService" name="mainService" type="text" placeholder="Emergency plumbing">
+          </label>
+          <label>
+            <span>Observed issue</span>
+            <select id="observedIssue" name="observedIssue">
+              <option>mobile layout feels dated</option>
+              <option>quote form is hard to find</option>
+              <option>calls are not tracked</option>
+              <option>service offer is unclear</option>
+              <option>site is slow or visually stale</option>
+            </select>
+          </label>
+          <button class="button button-primary" type="submit">Draft outreach email</button>
+          <p class="form-note" id="formNote" role="status"></p>
+        </form>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Lead Sprint is a productized service blueprint. Replace this footer with your name, city, and contact email before selling.</p>
+      <a href="#top">Back to top</a>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
