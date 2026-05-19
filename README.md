@@ -7,6 +7,7 @@ The repo contains:
 - A static landing page at `index.html`
 - A live ROI calculator and outreach email drafter in `script.js`
 - A prospect audit console with local pipeline storage and CSV export
+- A mini-proposal generator for sales calls
 - A polished CSS system in `styles.css`
 - A practical business plan and sales workflow in `docs/`
 
@@ -50,5 +51,11 @@ git push -u origin main
 ## GitHub Pages
 
 The site is ready for GitHub Pages from the repository root on `main`. `.nojekyll` is included so GitHub serves the static files directly.
+
+## Sales Positioning
+
+The core objection is simple: a business owner could build their own website.
+
+The response is also simple: Lead Sprint is not selling raw website assembly. It sells diagnosis, conversion copy, implementation, form/testing QA, analytics verification, and a short handoff plan in a fixed delivery window.
 
 Image credit: Austin Distel on Unsplash.

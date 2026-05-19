@@ -133,9 +133,12 @@ const auditLine = document.querySelector("#auditLine");
 const auditNext = document.querySelector("#auditNext");
 const auditNote = document.querySelector("#auditNote");
 const copyAuditEmail = document.querySelector("#copyAuditEmail");
+const copyProposal = document.querySelector("#copyProposal");
 const saveProspect = document.querySelector("#saveProspect");
 const exportProspects = document.querySelector("#exportProspects");
 const prospectRows = document.querySelector("#prospectRows");
+const proposalText = document.querySelector("#proposalText");
+const proposalMeta = document.querySelector("#proposalMeta");
 
 let latestAudit = null;
 
@@ -192,10 +195,14 @@ function buildAudit() {
 }
 
 function renderAudit(audit) {
+  const pack = recommendedPackage(audit);
+
   auditScore.textContent = audit.score;
   auditAngle.textContent = audit.angle;
   auditLine.textContent = audit.firstLine;
   auditNext.textContent = audit.nextAction;
+  proposalText.value = makeProposal(audit);
+  proposalMeta.textContent = `${pack.name}, ${formatter.format(pack.price)}, ${pack.timeline}`;
 }
 
 function makeAuditEmail(audit) {
@@ -219,6 +226,58 @@ function makeAuditEmail(audit) {
     "Would it be worth a 15-minute look this week?",
     "",
     "Best,"
+  ].join("\n");
+}
+
+function recommendedPackage(audit) {
+  if (audit.score >= 82 || audit.leaks.length >= 4) {
+    return {
+      name: "Growth Sprint",
+      price: 1500,
+      timeline: "5 working days",
+      scope: "one focused page refresh, quote path, analytics events, review placement, response templates, and two conversion improvements"
+    };
+  }
+
+  return {
+    name: "Pilot Sprint",
+    price: 750,
+    timeline: "72 hours",
+    scope: "one focused page refresh, quote path, analytics events, inbox routing, and a handoff report"
+  };
+}
+
+function makeProposal(audit) {
+  const pack = recommendedPackage(audit);
+  const leakList = audit.leaks.length
+    ? audit.leaks.map((leak) => `- ${leak}`).join("\n")
+    : "- The current lead path is unclear";
+
+  return [
+    `${pack.name} Proposal for ${audit.business}`,
+    "",
+    `Website: ${audit.website || "not provided"}`,
+    `Niche: ${audit.niche}`,
+    `Priority score: ${audit.score}/100`,
+    `Recommended angle: ${audit.angle}`,
+    "",
+    "What I noticed:",
+    leakList,
+    "",
+    "Recommended sprint:",
+    `I recommend the ${pack.name}: ${pack.scope}.`,
+    "",
+    "Why this is not just a website build:",
+    "The value is in diagnosing the first lead leaks, rewriting the conversion path, implementing the changes, testing form and call flow, verifying analytics events, and handing over the next action list.",
+    "",
+    "Price and timing:",
+    `${formatter.format(pack.price)} for ${pack.timeline} after access and intake are complete.`,
+    "",
+    "Completion promise:",
+    "If the mobile page, lead path, and tracking events are not verified by the delivery deadline, the fee pauses until those items are complete.",
+    "",
+    "Next step:",
+    "Approve the sprint, send access, and confirm the main service you want more inquiries for."
   ].join("\n");
 }
 
@@ -279,6 +338,16 @@ auditForm.addEventListener("submit", (event) => {
   auditNote.textContent = "Prospect scored. Copy the email or save the lead to your local pipeline.";
 });
 
+auditForm.addEventListener("input", () => {
+  latestAudit = buildAudit();
+  renderAudit(latestAudit);
+});
+
+auditForm.addEventListener("change", () => {
+  latestAudit = buildAudit();
+  renderAudit(latestAudit);
+});
+
 copyAuditEmail.addEventListener("click", async () => {
   latestAudit = latestAudit || buildAudit();
   renderAudit(latestAudit);
@@ -289,6 +358,20 @@ copyAuditEmail.addEventListener("click", async () => {
     auditNote.textContent = "Outreach email copied.";
   } catch {
     auditNote.textContent = "Clipboard was unavailable. Use the Start section to open a mail draft.";
+  }
+});
+
+copyProposal.addEventListener("click", async () => {
+  latestAudit = latestAudit || buildAudit();
+  renderAudit(latestAudit);
+
+  try {
+    await navigator.clipboard.writeText(proposalText.value);
+    auditNote.textContent = "Mini-proposal copied.";
+  } catch {
+    proposalText.focus();
+    proposalText.select();
+    auditNote.textContent = "Clipboard was unavailable. The proposal text is selected.";
   }
 });
 

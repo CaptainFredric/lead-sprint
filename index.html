@@ -19,6 +19,7 @@
       </a>
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="#offer">Offer</a>
+        <a href="#diy">DIY?</a>
         <a href="#calculator">ROI</a>
         <a href="#console">Console</a>
         <a href="#delivery">Delivery</a>
@@ -115,6 +116,45 @@
               and follow-up without bloating the pilot.
             </p>
           </article>
+        </div>
+      </section>
+
+      <section class="section section-band" id="diy">
+        <div class="section-heading">
+          <p class="eyebrow">The real objection</p>
+          <h2>Yes, they could build a website. They are buying the lead system.</h2>
+          <p>
+            The sprint wins when it is sold as diagnosis, implementation, verification, and saved
+            owner time. The page is only the visible part of the work.
+          </p>
+        </div>
+
+        <div class="diy-grid">
+          <article class="diy-card">
+            <span class="card-number">DIY</span>
+            <h3>What the owner has to do alone</h3>
+            <ul class="check-list muted-list">
+              <li>Figure out why visitors are not contacting them</li>
+              <li>Write a clearer offer without sounding generic</li>
+              <li>Set up forms, routing, spam control, and tracking</li>
+              <li>Test mobile, delivery, analytics, and follow-up</li>
+            </ul>
+          </article>
+          <article class="diy-card">
+            <span class="card-number">SPRINT</span>
+            <h3>What the sprint makes obvious</h3>
+            <ul class="check-list">
+              <li>Which lead leaks matter first</li>
+              <li>What changed and why it should improve inquiries</li>
+              <li>Whether the form and call paths actually work</li>
+              <li>What to improve next without a large redesign</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="value-equation">
+          <strong>Sell the accountable outcome:</strong>
+          <span>site diagnosis + conversion copy + implementation + tracking + handoff in 72 hours.</span>
         </div>
       </section>
 
@@ -241,6 +281,7 @@
             <div class="console-actions">
               <button class="button button-primary" type="submit">Score prospect</button>
               <button class="button button-light" id="copyAuditEmail" type="button">Copy email</button>
+              <button class="button button-light" id="copyProposal" type="button">Copy proposal</button>
               <button class="button button-light" id="saveProspect" type="button">Save lead</button>
             </div>
             <p class="form-note" id="auditNote" role="status"></p>
@@ -266,6 +307,14 @@
               <p id="auditNext">Send a short teardown email and offer a 15-minute review this week.</p>
             </div>
           </aside>
+        </div>
+
+        <div class="proposal-panel">
+          <div class="pipeline-head">
+            <h3>Mini-proposal</h3>
+            <span id="proposalMeta">Pilot Sprint, $750, 72 hours</span>
+          </div>
+          <textarea id="proposalText" class="proposal-text" readonly></textarea>
         </div>
 
         <div class="pipeline-panel">
