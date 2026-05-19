@@ -353,7 +353,9 @@ h3 {
 .audit-output,
 .pipeline-panel,
 .proposal-panel,
-.diy-card {
+.diy-card,
+.settings-form,
+.close-panel {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
@@ -614,6 +616,14 @@ h3 {
   font-weight: 800;
 }
 
+.proposal-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
 .proposal-text {
   display: block;
   min-height: 260px;
@@ -666,6 +676,90 @@ h3 {
   margin-bottom: 14px;
   color: var(--blue);
   font-weight: 900;
+}
+
+.setup-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.settings-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  padding: 24px;
+}
+
+.settings-form label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.settings-form input {
+  min-height: 46px;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--ink);
+  background: #ffffff;
+  font: inherit;
+}
+
+.settings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-self: end;
+}
+
+.settings-form .form-note {
+  align-self: center;
+}
+
+.close-panel {
+  display: grid;
+  gap: 16px;
+  padding: 24px;
+  background:
+    linear-gradient(135deg, rgba(31, 157, 99, 0.1), rgba(217, 155, 34, 0.12)),
+    var(--surface);
+}
+
+.close-panel > div:first-child {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.close-panel strong,
+.close-panel p {
+  display: block;
+  margin: 4px 0 0;
+}
+
+.close-panel p {
+  color: var(--muted);
+}
+
+.close-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.close-steps {
+  display: grid;
+  gap: 10px;
+  padding-left: 22px;
+  margin: 0;
+  color: var(--ink);
+  font-weight: 750;
 }
 
 .pricing-grid {
@@ -843,7 +937,8 @@ h3 {
   .calculator-shell,
   .proof-layout,
   .console-layout,
-  .diy-grid {
+  .diy-grid,
+  .setup-layout {
     grid-template-columns: 1fr;
   }
 }
@@ -881,7 +976,8 @@ h3 {
   .signal-strip,
   .pricing-grid,
   .intake-form,
-  .field-grid {
+  .field-grid,
+  .settings-form {
     grid-template-columns: 1fr;
   }
 
@@ -933,17 +1029,53 @@ h3 {
   .intake-form,
   .proof-copy,
   .audit-form,
-  .audit-output {
+  .audit-output,
+  .settings-form,
+  .close-panel {
     padding: 18px;
   }
 
   .console-actions,
   .console-actions .button,
-  .pipeline-head .button {
+  .pipeline-head .button,
+  .settings-actions,
+  .settings-actions .button,
+  .close-actions .button {
     width: 100%;
   }
 
   .pipeline-head {
     align-items: stretch;
+  }
+}
+
+@media print {
+  body.print-proposal > * {
+    visibility: hidden;
+  }
+
+  body.print-proposal .proposal-panel,
+  body.print-proposal .proposal-panel * {
+    visibility: visible;
+  }
+
+  body.print-proposal .proposal-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    border: 0;
+    box-shadow: none;
+  }
+
+  body.print-proposal .proposal-toolbar .button {
+    display: none;
+  }
+
+  body.print-proposal .proposal-text {
+    min-height: auto;
+    border: 0;
+    white-space: pre-wrap;
   }
 }

@@ -8,6 +8,7 @@ The repo contains:
 - A live ROI calculator and outreach email drafter in `script.js`
 - A prospect audit console with local pipeline storage and CSV export
 - A mini-proposal generator for sales calls
+- A local seller setup panel for booking, deposit, contact, and footer identity
 - A polished CSS system in `styles.css`
 - A practical business plan and sales workflow in `docs/`
 
@@ -31,11 +32,17 @@ Start with a $750 pilot. Use the third-day handoff to offer $250/month care plan
 
 ## Before Selling
 
-Replace the generic identity with your details:
+Use the seller setup panel on the live page to save private, browser-local details:
+
+- Your name
+- Contact email
+- Booking link
+- Deposit link
+- City or service area
+
+Then replace the generic identity in the repo when you are ready to make the public page client-facing:
 
 - Business name in the header and footer
-- Contact email in the footer
-- City or service area
 - One real example screenshot when you have a pilot
 - Any compliance language required for the client niche
 

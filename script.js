@@ -9,6 +9,7 @@ const numberFormatter = new Intl.NumberFormat("en-US", {
 });
 
 const prospectStorageKey = "leadSprintProspects";
+const sellerStorageKey = "leadSprintSeller";
 
 const calculatorInputs = {
   visits: document.querySelector("#visits"),
@@ -101,6 +102,10 @@ intakeForm.addEventListener("submit", (event) => {
   const websiteUrl = document.querySelector("#websiteUrl").value.trim();
   const mainService = document.querySelector("#mainService").value.trim();
   const observedIssue = document.querySelector("#observedIssue").value;
+  const seller = getSellerSettings();
+  const bookingLine = seller.bookingUrl
+    ? `If useful, grab a teardown slot here: ${seller.bookingUrl}`
+    : "Would it be worth a 15-minute look this week?";
 
   const subject = `Quick idea for ${businessName || "your website"}`;
   const body = [
@@ -116,9 +121,10 @@ intakeForm.addEventListener("submit", (event) => {
     "",
     "The pilot is $750. If the form, mobile page, and analytics events are not verified by the end of day three, the fee pauses until those items are complete.",
     "",
-    "Would it be worth a 15-minute look this week?",
+    bookingLine,
     "",
-    "Best,"
+    "Best,",
+    seller.sellerName || ""
   ].join("\n");
 
   const mailto = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -139,8 +145,78 @@ const exportProspects = document.querySelector("#exportProspects");
 const prospectRows = document.querySelector("#prospectRows");
 const proposalText = document.querySelector("#proposalText");
 const proposalMeta = document.querySelector("#proposalMeta");
+const printProposal = document.querySelector("#printProposal");
+const sellerForm = document.querySelector("#sellerForm");
+const sellerName = document.querySelector("#sellerName");
+const sellerEmail = document.querySelector("#sellerEmail");
+const bookingUrl = document.querySelector("#bookingUrl");
+const depositUrl = document.querySelector("#depositUrl");
+const serviceArea = document.querySelector("#serviceArea");
+const sellerNote = document.querySelector("#sellerNote");
+const sellerPreview = document.querySelector("#sellerPreview");
+const sellerPreviewDetail = document.querySelector("#sellerPreviewDetail");
+const resetSeller = document.querySelector("#resetSeller");
+const openBooking = document.querySelector("#openBooking");
+const openDeposit = document.querySelector("#openDeposit");
+const copyKickoff = document.querySelector("#copyKickoff");
+const footerIdentity = document.querySelector("#footerIdentity");
 
 let latestAudit = null;
+
+const defaultSeller = {
+  sellerName: "",
+  sellerEmail: "",
+  bookingUrl: "",
+  depositUrl: "",
+  serviceArea: ""
+};
+
+function getSellerSettings() {
+  try {
+    return {
+      ...defaultSeller,
+      ...(JSON.parse(localStorage.getItem(sellerStorageKey)) || {})
+    };
+  } catch {
+    return { ...defaultSeller };
+  }
+}
+
+function setSellerSettings(settings) {
+  localStorage.setItem(sellerStorageKey, JSON.stringify(settings));
+}
+
+function normalizeUrl(value) {
+  if (!value) {
+    return "";
+  }
+
+  try {
+    const url = new URL(value);
+    return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+  } catch {
+    return "";
+  }
+}
+
+function sellerContactLine() {
+  const seller = getSellerSettings();
+  const parts = [seller.sellerEmail, seller.serviceArea].filter(Boolean);
+  return parts.length ? parts.join(" | ") : "No public contact details are saved yet.";
+}
+
+function renderSellerSettings() {
+  const seller = getSellerSettings();
+  sellerName.value = seller.sellerName;
+  sellerEmail.value = seller.sellerEmail;
+  bookingUrl.value = seller.bookingUrl;
+  depositUrl.value = seller.depositUrl;
+  serviceArea.value = seller.serviceArea;
+
+  sellerPreview.textContent = seller.sellerName || "Lead Sprint operator";
+  sellerPreviewDetail.textContent = sellerContactLine();
+  footerIdentity.textContent = `${seller.sellerName || "Lead Sprint"}${seller.serviceArea ? ` | ${seller.serviceArea}` : ""}${seller.sellerEmail ? ` | ${seller.sellerEmail}` : ""}`;
+}
 
 function getCheckedLeaks() {
   return [...document.querySelectorAll("input[name='leadLeak']:checked")].map((input) => ({
@@ -206,9 +282,13 @@ function renderAudit(audit) {
 }
 
 function makeAuditEmail(audit) {
+  const seller = getSellerSettings();
   const proofLine = audit.jobValue
     ? `For ${audit.niche}, even one booked job around ${formatter.format(audit.jobValue)} can make a focused website cleanup worth testing.`
     : `For ${audit.niche}, even one extra booked job can make a focused website cleanup worth testing.`;
+  const bookingLine = seller.bookingUrl
+    ? `If useful, grab a teardown slot here: ${seller.bookingUrl}`
+    : "Would it be worth a 15-minute look this week?";
 
   return [
     `Subject: Quick idea for ${audit.business}`,
@@ -223,9 +303,10 @@ function makeAuditEmail(audit) {
     "",
     "The pilot is $750. If the form, mobile page, and analytics events are not verified by the end of day three, the fee pauses until those items are complete.",
     "",
-    "Would it be worth a 15-minute look this week?",
+    bookingLine,
     "",
-    "Best,"
+    "Best,",
+    seller.sellerName || ""
   ].join("\n");
 }
 
@@ -248,13 +329,29 @@ function recommendedPackage(audit) {
 }
 
 function makeProposal(audit) {
+  const seller = getSellerSettings();
   const pack = recommendedPackage(audit);
   const leakList = audit.leaks.length
     ? audit.leaks.map((leak) => `- ${leak}`).join("\n")
     : "- The current lead path is unclear";
+  const contactBlock = [
+    seller.sellerName ? `Seller: ${seller.sellerName}` : "",
+    seller.sellerEmail ? `Email: ${seller.sellerEmail}` : "",
+    seller.serviceArea ? `Service area: ${seller.serviceArea}` : "",
+    seller.bookingUrl ? `Booking: ${seller.bookingUrl}` : "",
+    seller.depositUrl ? `Deposit: ${seller.depositUrl}` : ""
+  ].filter(Boolean);
+  const nextStep = seller.bookingUrl || seller.depositUrl
+    ? [
+        seller.bookingUrl ? `1. Book the teardown: ${seller.bookingUrl}` : "1. Confirm a 15-minute teardown time.",
+        seller.depositUrl ? `2. Start the sprint deposit: ${seller.depositUrl}` : "2. Confirm payment terms before build starts.",
+        "3. Send website access, brand assets, and the main service to prioritize."
+      ].join("\n")
+    : "Approve the sprint, send access, and confirm the main service you want more inquiries for.";
 
   return [
     `${pack.name} Proposal for ${audit.business}`,
+    ...(contactBlock.length ? ["", ...contactBlock] : []),
     "",
     `Website: ${audit.website || "not provided"}`,
     `Niche: ${audit.niche}`,
@@ -277,7 +374,9 @@ function makeProposal(audit) {
     "If the mobile page, lead path, and tracking events are not verified by the delivery deadline, the fee pauses until those items are complete.",
     "",
     "Next step:",
-    "Approve the sprint, send access, and confirm the main service you want more inquiries for."
+    nextStep,
+    "",
+    seller.sellerName ? `Prepared by ${seller.sellerName}` : "Prepared by Lead Sprint"
   ].join("\n");
 }
 
@@ -417,6 +516,83 @@ function csvCell(value) {
   return `"${String(value ?? "").replace(/"/g, '""')}"`;
 }
 
+sellerForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  setSellerSettings({
+    sellerName: sellerName.value.trim(),
+    sellerEmail: sellerEmail.value.trim(),
+    bookingUrl: normalizeUrl(bookingUrl.value.trim()),
+    depositUrl: normalizeUrl(depositUrl.value.trim()),
+    serviceArea: serviceArea.value.trim()
+  });
+  renderSellerSettings();
+  latestAudit = latestAudit || buildAudit();
+  renderAudit(latestAudit);
+  sellerNote.textContent = "Seller setup saved locally in this browser.";
+});
+
+resetSeller.addEventListener("click", () => {
+  localStorage.removeItem(sellerStorageKey);
+  renderSellerSettings();
+  latestAudit = latestAudit || buildAudit();
+  renderAudit(latestAudit);
+  sellerNote.textContent = "Seller setup reset.";
+});
+
+openBooking.addEventListener("click", () => {
+  const url = normalizeUrl(getSellerSettings().bookingUrl);
+  if (!url) {
+    sellerNote.textContent = "Add and save a booking link first.";
+    return;
+  }
+  window.open(url, "_blank", "noopener");
+});
+
+openDeposit.addEventListener("click", () => {
+  const url = normalizeUrl(getSellerSettings().depositUrl);
+  if (!url) {
+    sellerNote.textContent = "Add and save a deposit link first.";
+    return;
+  }
+  window.open(url, "_blank", "noopener");
+});
+
+copyKickoff.addEventListener("click", async () => {
+  const audit = latestAudit || buildAudit();
+  const seller = getSellerSettings();
+  const checklist = [
+    `Kickoff checklist for ${audit.business}`,
+    "",
+    "- Confirm the main service to prioritize",
+    "- Confirm service area and strongest proof points",
+    "- Send website/CMS access",
+    "- Send logo, colors, photos, and three reviews",
+    "- Confirm where form submissions should route",
+    "- Confirm analytics access or tracking install path",
+    "- Send three competitors or reference sites",
+    "- Approve delivery window and revision boundary",
+    seller.depositUrl ? `- Pay sprint deposit: ${seller.depositUrl}` : "- Confirm payment before build starts",
+    "",
+    `Prepared by ${seller.sellerName || "Lead Sprint"}`
+  ].join("\n");
+
+  try {
+    await navigator.clipboard.writeText(checklist);
+    sellerNote.textContent = "Kickoff checklist copied.";
+  } catch {
+    sellerNote.textContent = "Clipboard was unavailable. Copy from the proposal panel instead.";
+  }
+});
+
+printProposal.addEventListener("click", () => {
+  latestAudit = latestAudit || buildAudit();
+  renderAudit(latestAudit);
+  document.body.classList.add("print-proposal");
+  window.print();
+  window.setTimeout(() => document.body.classList.remove("print-proposal"), 300);
+});
+
+renderSellerSettings();
 latestAudit = buildAudit();
 renderAudit(latestAudit);
 renderProspects();

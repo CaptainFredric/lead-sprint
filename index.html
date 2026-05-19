@@ -23,6 +23,7 @@
         <a href="#calculator">ROI</a>
         <a href="#console">Console</a>
         <a href="#delivery">Delivery</a>
+        <a href="#setup">Setup</a>
         <a href="#start">Start</a>
       </nav>
     </header>
@@ -312,7 +313,10 @@
         <div class="proposal-panel">
           <div class="pipeline-head">
             <h3>Mini-proposal</h3>
-            <span id="proposalMeta">Pilot Sprint, $750, 72 hours</span>
+            <div class="proposal-toolbar">
+              <span id="proposalMeta">Pilot Sprint, $750, 72 hours</span>
+              <button class="button button-light" id="printProposal" type="button">Print proposal</button>
+            </div>
           </div>
           <textarea id="proposalText" class="proposal-text" readonly></textarea>
         </div>
@@ -401,6 +405,66 @@
         </div>
       </section>
 
+      <section class="section section-band" id="setup">
+        <div class="section-heading">
+          <p class="eyebrow">Seller setup</p>
+          <h2>Make the page usable before a real prospect call.</h2>
+          <p>
+            Save your seller details locally in this browser. They flow into outreach copy, proposals,
+            booking links, deposit prompts, and the footer without hard-coding personal info into the repo.
+          </p>
+        </div>
+
+        <div class="setup-layout">
+          <form class="settings-form" id="sellerForm">
+            <label>
+              <span>Your name</span>
+              <input id="sellerName" name="sellerName" type="text" placeholder="Your name">
+            </label>
+            <label>
+              <span>Contact email</span>
+              <input id="sellerEmail" name="sellerEmail" type="email" placeholder="you@example.com">
+            </label>
+            <label>
+              <span>Booking link</span>
+              <input id="bookingUrl" name="bookingUrl" type="url" placeholder="https://calendly.com/you/teardown">
+            </label>
+            <label>
+              <span>Deposit link</span>
+              <input id="depositUrl" name="depositUrl" type="url" placeholder="https://buy.stripe.com/...">
+            </label>
+            <label>
+              <span>Service area</span>
+              <input id="serviceArea" name="serviceArea" type="text" placeholder="Austin and remote">
+            </label>
+            <div class="settings-actions">
+              <button class="button button-primary" type="submit">Save setup</button>
+              <button class="button button-light" id="resetSeller" type="button">Reset</button>
+            </div>
+            <p class="form-note" id="sellerNote" role="status"></p>
+          </form>
+
+          <aside class="close-panel">
+            <div>
+              <span class="result-label">Configured identity</span>
+              <strong id="sellerPreview">Lead Sprint operator</strong>
+              <p id="sellerPreviewDetail">No public contact details are saved yet.</p>
+            </div>
+            <div class="close-actions">
+              <button class="button button-light" id="openBooking" type="button">Open booking</button>
+              <button class="button button-light" id="openDeposit" type="button">Open deposit</button>
+              <button class="button button-light" id="copyKickoff" type="button">Copy kickoff checklist</button>
+            </div>
+            <ol class="close-steps">
+              <li>Send teardown note.</li>
+              <li>Book 15-minute review.</li>
+              <li>Confirm one service, access, and approval.</li>
+              <li>Collect deposit before build starts.</li>
+            </ol>
+          </aside>
+        </div>
+      </section>
+
       <section class="section proof-section">
         <div class="section-heading">
           <p class="eyebrow">Sales angle</p>
@@ -481,7 +545,7 @@
     </main>
 
     <footer class="site-footer">
-      <p>Lead Sprint is a productized service blueprint. Replace this footer with your name, city, and contact email before selling.</p>
+      <p id="footerIdentity">Lead Sprint is a productized service blueprint. Add your seller setup before selling.</p>
       <a href="#top">Back to top</a>
     </footer>
 
