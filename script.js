@@ -143,6 +143,16 @@ const copyProposal = document.querySelector("#copyProposal");
 const saveProspect = document.querySelector("#saveProspect");
 const exportProspects = document.querySelector("#exportProspects");
 const copyFollowUp = document.querySelector("#copyFollowUp");
+const campaignNiche = document.querySelector("#campaignNiche");
+const campaignOffer = document.querySelector("#campaignOffer");
+const campaignValue = document.querySelector("#campaignValue");
+const campaignBuyer = document.querySelector("#campaignBuyer");
+const campaignAngle = document.querySelector("#campaignAngle");
+const campaignLeaks = document.querySelector("#campaignLeaks");
+const campaignObjection = document.querySelector("#campaignObjection");
+const applyCampaign = document.querySelector("#applyCampaign");
+const copyCampaign = document.querySelector("#copyCampaign");
+const campaignNote = document.querySelector("#campaignNote");
 const prospectRows = document.querySelector("#prospectRows");
 const proposalText = document.querySelector("#proposalText");
 const proposalMeta = document.querySelector("#proposalMeta");
@@ -184,6 +194,99 @@ const defaultSeller = {
   bookingUrl: "",
   depositUrl: "",
   serviceArea: ""
+};
+
+const campaignData = {
+  homeServices: {
+    label: "Home services",
+    offer: "$750 pilot",
+    value: "$850+",
+    buyer: "Owner/operator",
+    auditNiche: "home services",
+    auditValue: 850,
+    angle: "Make emergency quote and call paths easier to find from mobile.",
+    leaks: [
+      "No clear call or quote action above the fold",
+      "Mobile layout feels hard to scan",
+      "No obvious call or form tracking"
+    ],
+    objection: "They may already get referrals. Position the sprint as capturing the ready buyers who check the site before calling."
+  },
+  wellness: {
+    label: "Health and wellness",
+    offer: "$1,500 growth sprint",
+    value: "$600+",
+    buyer: "Practice owner",
+    auditNiche: "health and wellness",
+    auditValue: 650,
+    angle: "Turn trust, reviews, and appointment intent into a clearer booking path.",
+    leaks: [
+      "Reviews or proof are missing near the offer",
+      "Quote form is buried or asks too much",
+      "Mobile layout feels hard to scan"
+    ],
+    objection: "They may worry about sounding salesy. Frame the work as trust, clarity, and appointment flow."
+  },
+  legal: {
+    label: "Legal practices",
+    offer: "$1,500 growth sprint",
+    value: "$2,000+",
+    buyer: "Managing partner",
+    auditNiche: "legal",
+    auditValue: 2000,
+    angle: "Clarify the intake path for urgent, high-value cases.",
+    leaks: [
+      "No clear call or quote action above the fold",
+      "Reviews or proof are missing near the offer",
+      "No obvious call or form tracking"
+    ],
+    objection: "They may want SEO first. Start with the visitors already arriving and make intake easier to complete."
+  },
+  auto: {
+    label: "Auto services",
+    offer: "$750 pilot",
+    value: "$500+",
+    buyer: "Shop owner",
+    auditNiche: "auto services",
+    auditValue: 550,
+    angle: "Make quote requests, service menus, and proof easier to scan on mobile.",
+    leaks: [
+      "Mobile layout feels hard to scan",
+      "Quote form is buried or asks too much",
+      "Reviews or proof are missing near the offer"
+    ],
+    objection: "They may rely on phone calls. Show how cleaner mobile pages and click tracking make calls easier to win."
+  },
+  events: {
+    label: "Wedding and events",
+    offer: "$1,500 growth sprint",
+    value: "$1,200+",
+    buyer: "Founder",
+    auditNiche: "events",
+    auditValue: 1200,
+    angle: "Turn visual interest into a faster inquiry path with proof and availability cues.",
+    leaks: [
+      "Reviews or proof are missing near the offer",
+      "Quote form is buried or asks too much",
+      "No obvious call or form tracking"
+    ],
+    objection: "They may think portfolio visuals are enough. Position the sprint around inquiries, dates, and booking confidence."
+  },
+  professional: {
+    label: "Professional services",
+    offer: "$750 pilot",
+    value: "$1,000+",
+    buyer: "Principal",
+    auditNiche: "professional services",
+    auditValue: 1000,
+    angle: "Make expertise, fit, and consultation requests easier to understand.",
+    leaks: [
+      "No clear call or quote action above the fold",
+      "Quote form is buried or asks too much",
+      "No obvious call or form tracking"
+    ],
+    objection: "They may not see the site as a sales channel. Tie the sprint to qualified consultation requests."
+  }
 };
 
 function getSellerSettings() {
@@ -257,6 +360,42 @@ function renderSellerSettings() {
   sellerPreview.textContent = seller.sellerName || "Lead Sprint operator";
   sellerPreviewDetail.textContent = sellerContactLine();
   footerIdentity.textContent = `${seller.sellerName || "Lead Sprint"}${seller.serviceArea ? ` | ${seller.serviceArea}` : ""}${seller.sellerEmail ? ` | ${seller.sellerEmail}` : ""}`;
+}
+
+function selectedCampaign() {
+  return campaignData[campaignNiche.value] || campaignData.homeServices;
+}
+
+function renderCampaign() {
+  const campaign = selectedCampaign();
+  campaignOffer.textContent = campaign.offer;
+  campaignValue.textContent = campaign.value;
+  campaignBuyer.textContent = campaign.buyer;
+  campaignAngle.textContent = campaign.angle;
+  campaignObjection.textContent = campaign.objection;
+  campaignLeaks.innerHTML = campaign.leaks.map((leak) => `<li>${escapeHtml(leak)}</li>`).join("");
+}
+
+function makeCampaignBrief(campaign) {
+  return [
+    `${campaign.label} Lead Sprint campaign`,
+    "",
+    `First offer: ${campaign.offer}`,
+    `Typical job value: ${campaign.value}`,
+    `Best buyer: ${campaign.buyer}`,
+    "",
+    "Opening angle:",
+    campaign.angle,
+    "",
+    "Lead leaks to inspect:",
+    ...campaign.leaks.map((leak) => `- ${leak}`),
+    "",
+    "Objection handle:",
+    campaign.objection,
+    "",
+    "First email move:",
+    "Find one visible lead leak, name it plainly, and ask whether a 15-minute teardown would be useful this week."
+  ].join("\n");
 }
 
 function getCheckedLeaks() {
@@ -515,6 +654,32 @@ function escapeHtml(value) {
     return entities[character];
   });
 }
+
+campaignNiche.addEventListener("change", () => {
+  renderCampaign();
+  campaignNote.textContent = "Campaign angle updated.";
+});
+
+applyCampaign.addEventListener("click", () => {
+  const campaign = selectedCampaign();
+  document.querySelector("#auditNiche").value = campaign.auditNiche;
+  document.querySelector("#auditValue").value = campaign.auditValue;
+  document.querySelectorAll("input[name='leadLeak']").forEach((input) => {
+    input.checked = campaign.leaks.includes(input.value);
+  });
+  latestAudit = buildAudit();
+  renderAudit(latestAudit);
+  campaignNote.textContent = `${campaign.label} campaign applied to the audit console.`;
+});
+
+copyCampaign.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(makeCampaignBrief(selectedCampaign()));
+    campaignNote.textContent = "Campaign brief copied.";
+  } catch {
+    campaignNote.textContent = "Clipboard was unavailable. Use the visible campaign brief.";
+  }
+});
 
 auditForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -833,6 +998,7 @@ printProposal.addEventListener("click", () => {
 });
 
 renderSellerSettings();
+renderCampaign();
 setPlannerValueLabels();
 calculatePlanner();
 latestAudit = buildAudit();

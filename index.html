@@ -19,6 +19,7 @@
       </a>
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="#offer">Offer</a>
+        <a href="#niches">Niches</a>
         <a href="#diy">DIY?</a>
         <a href="#calculator">ROI</a>
         <a href="#console">Console</a>
@@ -118,6 +119,69 @@
               and follow-up without bloating the pilot.
             </p>
           </article>
+        </div>
+      </section>
+
+      <section class="section" id="niches">
+        <div class="section-heading">
+          <p class="eyebrow">Niche campaign builder</p>
+          <h2>Pick a market and sharpen the first sales angle.</h2>
+          <p>
+            Use this before prospecting so each email starts from a concrete business problem instead
+            of a generic website pitch.
+          </p>
+        </div>
+
+        <div class="campaign-layout">
+          <form class="campaign-form" id="campaignForm">
+            <label>
+              <span>Target niche</span>
+              <select id="campaignNiche" name="campaignNiche">
+                <option value="homeServices">Home services</option>
+                <option value="wellness">Health and wellness</option>
+                <option value="legal">Legal practices</option>
+                <option value="auto">Auto services</option>
+                <option value="events">Wedding and events</option>
+                <option value="professional">Professional services</option>
+              </select>
+            </label>
+
+            <div class="campaign-metrics" aria-label="Niche campaign metrics">
+              <div>
+                <span class="result-label">Good first offer</span>
+                <strong id="campaignOffer">$750 pilot</strong>
+              </div>
+              <div>
+                <span class="result-label">Typical job value</span>
+                <strong id="campaignValue">$850+</strong>
+              </div>
+              <div>
+                <span class="result-label">Best buyer</span>
+                <strong id="campaignBuyer">Owner/operator</strong>
+              </div>
+            </div>
+
+            <div class="console-actions">
+              <button class="button button-primary" id="applyCampaign" type="button">Apply to audit</button>
+              <button class="button button-light" id="copyCampaign" type="button">Copy campaign brief</button>
+            </div>
+            <p class="form-note" id="campaignNote" role="status"></p>
+          </form>
+
+          <aside class="campaign-output" aria-live="polite">
+            <div>
+              <span class="result-label">Opening angle</span>
+              <p id="campaignAngle">Make emergency quote paths easier to find from mobile.</p>
+            </div>
+            <div>
+              <span class="result-label">Lead leaks to inspect</span>
+              <ul id="campaignLeaks" class="compact-list"></ul>
+            </div>
+            <div>
+              <span class="result-label">Objection handle</span>
+              <p id="campaignObjection">The sprint focuses on the path from ready visitor to booked job, not a full redesign.</p>
+            </div>
+          </aside>
         </div>
       </section>
 

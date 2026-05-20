@@ -10,6 +10,7 @@ The repo contains:
 - A mini-proposal generator for sales calls
 - A local seller setup panel for booking, deposit, contact, and footer identity
 - An outreach planner and pipeline follow-up workflow
+- A niche campaign builder for vertical-specific angles
 - A polished CSS system in `styles.css`
 - A practical business plan and sales workflow in `docs/`
 

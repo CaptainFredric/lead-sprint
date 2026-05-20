@@ -358,7 +358,9 @@ h3 {
 .close-panel,
 .planner-form,
 .planner-output,
-.cadence-grid article {
+.cadence-grid article,
+.campaign-form,
+.campaign-output {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
@@ -467,6 +469,82 @@ h3 {
 }
 
 .value-equation span {
+  color: var(--ink);
+  font-weight: 750;
+}
+
+.campaign-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.campaign-form {
+  display: grid;
+  gap: 18px;
+  padding: 24px;
+}
+
+.campaign-form label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.campaign-form select {
+  min-height: 46px;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--ink);
+  background: #ffffff;
+  font: inherit;
+}
+
+.campaign-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.campaign-metrics > div,
+.campaign-output > div {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.campaign-metrics strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 1.3rem;
+  line-height: 1.1;
+}
+
+.campaign-output {
+  display: grid;
+  gap: 16px;
+  padding: 24px;
+  background:
+    linear-gradient(135deg, rgba(28, 109, 208, 0.08), rgba(232, 102, 79, 0.1)),
+    var(--surface);
+}
+
+.campaign-output p {
+  margin: 4px 0 0;
+  color: var(--ink);
+  font-weight: 750;
+}
+
+.compact-list {
+  display: grid;
+  gap: 8px;
+  padding-left: 18px;
+  margin: 8px 0 0;
   color: var(--ink);
   font-weight: 750;
 }
@@ -1023,7 +1101,8 @@ h3 {
   .console-layout,
   .diy-grid,
   .setup-layout,
-  .planner-layout {
+  .planner-layout,
+  .campaign-layout {
     grid-template-columns: 1fr;
   }
 
@@ -1067,7 +1146,8 @@ h3 {
   .intake-form,
   .field-grid,
   .settings-form,
-  .cadence-grid {
+  .cadence-grid,
+  .campaign-metrics {
     grid-template-columns: 1fr;
   }
 
@@ -1123,7 +1203,9 @@ h3 {
   .settings-form,
   .close-panel,
   .planner-form,
-  .planner-output {
+  .planner-output,
+  .campaign-form,
+  .campaign-output {
     padding: 18px;
   }
 
