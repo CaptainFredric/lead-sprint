@@ -22,6 +22,7 @@
         <a href="#diy">DIY?</a>
         <a href="#calculator">ROI</a>
         <a href="#console">Console</a>
+        <a href="#planner">Plan</a>
         <a href="#delivery">Delivery</a>
         <a href="#setup">Setup</a>
         <a href="#start">Start</a>
@@ -324,7 +325,10 @@
         <div class="pipeline-panel">
           <div class="pipeline-head">
             <h3>Saved prospect pipeline</h3>
-            <button class="button button-light" id="exportProspects" type="button">Export CSV</button>
+            <div class="pipeline-actions">
+              <button class="button button-light" id="copyFollowUp" type="button">Copy follow-up</button>
+              <button class="button button-light" id="exportProspects" type="button">Export CSV</button>
+            </div>
           </div>
           <div class="table-wrap">
             <table class="pipeline-table">
@@ -333,8 +337,9 @@
                   <th>Business</th>
                   <th>Niche</th>
                   <th>Score</th>
-                  <th>Angle</th>
-                  <th>Status</th>
+                  <th>Next step</th>
+                  <th>Follow-up</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody id="prospectRows">
@@ -344,6 +349,92 @@
               </tbody>
             </table>
           </div>
+        </div>
+      </section>
+
+      <section class="section section-band" id="planner">
+        <div class="section-heading">
+          <p class="eyebrow">Outreach planner</p>
+          <h2>Back into the daily prospecting number.</h2>
+          <p>
+            Pick a revenue target and realistic funnel rates. The planner turns that into the weekly
+            outreach volume and a daily cadence you can actually follow.
+          </p>
+        </div>
+
+        <div class="planner-layout">
+          <form class="planner-form" id="plannerForm">
+            <label class="range-row" for="revenueTarget">
+              <span>Monthly revenue target</span>
+              <strong data-planner-value-for="revenueTarget">$4,500</strong>
+              <input id="revenueTarget" name="revenueTarget" type="range" min="750" max="15000" step="250" value="4500">
+            </label>
+            <label class="range-row" for="averageDeal">
+              <span>Average first deal</span>
+              <strong data-planner-value-for="averageDeal">$750</strong>
+              <input id="averageDeal" name="averageDeal" type="range" min="500" max="2500" step="50" value="750">
+            </label>
+            <label class="range-row" for="replyRate">
+              <span>Email reply rate</span>
+              <strong data-planner-value-for="replyRate">8%</strong>
+              <input id="replyRate" name="replyRate" type="range" min="2" max="25" step="1" value="8">
+            </label>
+            <label class="range-row" for="callRate">
+              <span>Replies that book a call</span>
+              <strong data-planner-value-for="callRate">40%</strong>
+              <input id="callRate" name="callRate" type="range" min="10" max="80" step="5" value="40">
+            </label>
+            <label class="range-row" for="closeRatePlanner">
+              <span>Calls that close</span>
+              <strong data-planner-value-for="closeRatePlanner">30%</strong>
+              <input id="closeRatePlanner" name="closeRatePlanner" type="range" min="5" max="70" step="5" value="30">
+            </label>
+            <label class="range-row" for="workdays">
+              <span>Selling days per week</span>
+              <strong data-planner-value-for="workdays">5</strong>
+              <input id="workdays" name="workdays" type="range" min="2" max="7" step="1" value="5">
+            </label>
+          </form>
+
+          <aside class="planner-output" aria-live="polite">
+            <div>
+              <span class="result-label">Pilots needed per month</span>
+              <strong id="pilotsNeeded">6</strong>
+            </div>
+            <div>
+              <span class="result-label">Emails needed per week</span>
+              <strong id="weeklyEmails">145</strong>
+            </div>
+            <div>
+              <span class="result-label">Daily prospecting target</span>
+              <strong id="dailyProspects">29</strong>
+            </div>
+            <button class="button button-primary" id="copyDailyPlan" type="button">Copy daily plan</button>
+            <p class="form-note" id="plannerNote" role="status"></p>
+          </aside>
+        </div>
+
+        <div class="cadence-grid" aria-label="Outreach cadence">
+          <article>
+            <span>Day 0</span>
+            <h3>Personalized teardown note</h3>
+            <p>Lead with one visible issue and the 72-hour sprint promise.</p>
+          </article>
+          <article>
+            <span>Day 2</span>
+            <h3>Specific follow-up</h3>
+            <p>Restate the lead leak and ask whether a short teardown would help.</p>
+          </article>
+          <article>
+            <span>Day 5</span>
+            <h3>Proof or angle</h3>
+            <p>Send the ROI frame, a before/after idea, or the mini-proposal.</p>
+          </article>
+          <article>
+            <span>Day 10</span>
+            <h3>Close the loop</h3>
+            <p>Ask whether website leads are a priority now or later.</p>
+          </article>
         </div>
       </section>
 

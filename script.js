@@ -142,10 +142,25 @@ const copyAuditEmail = document.querySelector("#copyAuditEmail");
 const copyProposal = document.querySelector("#copyProposal");
 const saveProspect = document.querySelector("#saveProspect");
 const exportProspects = document.querySelector("#exportProspects");
+const copyFollowUp = document.querySelector("#copyFollowUp");
 const prospectRows = document.querySelector("#prospectRows");
 const proposalText = document.querySelector("#proposalText");
 const proposalMeta = document.querySelector("#proposalMeta");
 const printProposal = document.querySelector("#printProposal");
+const plannerInputs = {
+  revenueTarget: document.querySelector("#revenueTarget"),
+  averageDeal: document.querySelector("#averageDeal"),
+  replyRate: document.querySelector("#replyRate"),
+  callRate: document.querySelector("#callRate"),
+  closeRatePlanner: document.querySelector("#closeRatePlanner"),
+  workdays: document.querySelector("#workdays")
+};
+const plannerValueLabels = document.querySelectorAll("[data-planner-value-for]");
+const pilotsNeeded = document.querySelector("#pilotsNeeded");
+const weeklyEmails = document.querySelector("#weeklyEmails");
+const dailyProspects = document.querySelector("#dailyProspects");
+const copyDailyPlan = document.querySelector("#copyDailyPlan");
+const plannerNote = document.querySelector("#plannerNote");
 const sellerForm = document.querySelector("#sellerForm");
 const sellerName = document.querySelector("#sellerName");
 const sellerEmail = document.querySelector("#sellerEmail");
@@ -197,6 +212,32 @@ function normalizeUrl(value) {
   } catch {
     return "";
   }
+}
+
+function todayIso() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function addDaysIso(days) {
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
+function formatDateLabel(value) {
+  if (!value) {
+    return "Not set";
+  }
+
+  const date = new Date(`${value}T12:00:00`);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric"
+  });
 }
 
 function sellerContactLine() {
@@ -392,10 +433,48 @@ function setSavedProspects(prospects) {
   localStorage.setItem(prospectStorageKey, JSON.stringify(prospects));
 }
 
+function withPipelineDefaults(prospect) {
+  return {
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    touchCount: 0,
+    nextFollowUp: addDaysIso(2),
+    ...prospect
+  };
+}
+
+function nextPipelineState(prospect) {
+  const states = [
+    { status: "Follow up", days: 3 },
+    { status: "Book review", days: 2 },
+    { status: "Proposal sent", days: 4 },
+    { status: "Close or park", days: 7 },
+    { status: "Later", days: 14 }
+  ];
+  const nextIndex = Math.min(Number(prospect.touchCount || 0), states.length - 1);
+  const next = states[nextIndex];
+
+  return {
+    ...prospect,
+    status: next.status,
+    touchCount: Number(prospect.touchCount || 0) + 1,
+    updatedAt: new Date().toISOString(),
+    nextFollowUp: addDaysIso(next.days)
+  };
+}
+
+function findPrimaryProspect() {
+  const prospects = getSavedProspects();
+  return [...prospects].sort((a, b) => {
+    const dateCompare = String(a.nextFollowUp || "").localeCompare(String(b.nextFollowUp || ""));
+    return dateCompare || Number(b.score || 0) - Number(a.score || 0);
+  })[0];
+}
+
 function renderProspects() {
   const prospects = getSavedProspects();
   if (prospects.length === 0) {
-    prospectRows.innerHTML = '<tr><td colspan="5">No saved prospects yet.</td></tr>';
+    prospectRows.innerHTML = '<tr><td colspan="6">No saved prospects yet.</td></tr>';
     return;
   }
 
@@ -409,8 +488,15 @@ function renderProspects() {
           </td>
           <td>${escapeHtml(prospect.niche)}</td>
           <td>${prospect.score}</td>
-          <td>${escapeHtml(prospect.angle)}</td>
-          <td>${escapeHtml(prospect.status)}</td>
+          <td>
+            <strong>${escapeHtml(prospect.status || "Contact today")}</strong><br>
+            <span>${escapeHtml(prospect.angle)}</span>
+          </td>
+          <td>${formatDateLabel(prospect.nextFollowUp)}</td>
+          <td>
+            <button class="table-action" type="button" data-action="advance" data-id="${prospect.id}">Advance</button>
+            <button class="table-action" type="button" data-action="remove" data-id="${prospect.id}">Remove</button>
+          </td>
         </tr>
       `
     )
@@ -478,7 +564,13 @@ saveProspect.addEventListener("click", () => {
   latestAudit = latestAudit || buildAudit();
   renderAudit(latestAudit);
   const prospects = getSavedProspects();
-  setSavedProspects([latestAudit, ...prospects].slice(0, 50));
+  const savedLead = withPipelineDefaults(latestAudit);
+  const filteredProspects = prospects.filter((prospect) => {
+    const sameWebsite = savedLead.website && prospect.website === savedLead.website;
+    const sameBusiness = prospect.business === savedLead.business;
+    return !(sameWebsite || sameBusiness);
+  });
+  setSavedProspects([savedLead, ...filteredProspects].slice(0, 50));
   renderProspects();
   auditNote.textContent = "Lead saved locally in this browser.";
 });
@@ -490,7 +582,7 @@ exportProspects.addEventListener("click", () => {
     return;
   }
 
-  const header = ["Business", "Website", "Niche", "Job Value", "Score", "Angle", "Status", "Lead Leaks"];
+  const header = ["Business", "Website", "Niche", "Job Value", "Score", "Angle", "Status", "Next Follow-Up", "Lead Leaks"];
   const rows = prospects.map((prospect) => [
     prospect.business,
     prospect.website,
@@ -499,6 +591,7 @@ exportProspects.addEventListener("click", () => {
     prospect.score,
     prospect.angle,
     prospect.status,
+    prospect.nextFollowUp,
     prospect.leaks.join("; ")
   ]);
   const csv = [header, ...rows].map((row) => row.map(csvCell).join(",")).join("\n");
@@ -512,9 +605,156 @@ exportProspects.addEventListener("click", () => {
   auditNote.textContent = "CSV exported.";
 });
 
+prospectRows.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-action]");
+  if (!button) {
+    return;
+  }
+
+  const id = Number(button.dataset.id);
+  const prospects = getSavedProspects();
+  if (button.dataset.action === "remove") {
+    setSavedProspects(prospects.filter((prospect) => Number(prospect.id) !== id));
+    renderProspects();
+    auditNote.textContent = "Lead removed from the local pipeline.";
+    return;
+  }
+
+  if (button.dataset.action === "advance") {
+    setSavedProspects(
+      prospects.map((prospect) => (Number(prospect.id) === id ? nextPipelineState(prospect) : prospect))
+    );
+    renderProspects();
+    auditNote.textContent = "Pipeline step advanced and follow-up date updated.";
+  }
+});
+
+function makeFollowUpEmail(prospect) {
+  const seller = getSellerSettings();
+  const bookingLine = seller.bookingUrl
+    ? `If it is useful, you can book a short teardown here: ${seller.bookingUrl}`
+    : "Would a short teardown be useful this week?";
+
+  return [
+    `Subject: Re: quick idea for ${prospect.business}`,
+    "",
+    `Hi ${prospect.business},`,
+    "",
+    `Quick follow-up on ${prospect.website || "your website"}. The issue I would look at first is: ${prospect.angle.toLowerCase()}.`,
+    "",
+    "The goal is not a big redesign. It is to make the ready-to-buy visitor path clearer, verify the form or call flow, and make sure the result is trackable.",
+    "",
+    bookingLine,
+    "",
+    "Best,",
+    seller.sellerName || ""
+  ].join("\n");
+}
+
+copyFollowUp.addEventListener("click", async () => {
+  const prospect = findPrimaryProspect();
+  if (!prospect) {
+    auditNote.textContent = "Save a prospect before copying a follow-up.";
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(makeFollowUpEmail(prospect));
+    auditNote.textContent = `Follow-up copied for ${prospect.business}.`;
+  } catch {
+    auditNote.textContent = "Clipboard was unavailable. Copy a mini-proposal instead.";
+  }
+});
+
 function csvCell(value) {
   return `"${String(value ?? "").replace(/"/g, '""')}"`;
 }
+
+function setPlannerValueLabels() {
+  plannerValueLabels.forEach((label) => {
+    const target = plannerInputs[label.dataset.plannerValueFor];
+    if (!target) {
+      return;
+    }
+
+    const value = Number(target.value);
+    if (["revenueTarget", "averageDeal"].includes(target.id)) {
+      label.textContent = formatter.format(value);
+      return;
+    }
+
+    if (["replyRate", "callRate", "closeRatePlanner"].includes(target.id)) {
+      label.textContent = `${value}%`;
+      return;
+    }
+
+    label.textContent = numberFormatter.format(value);
+  });
+}
+
+function calculatePlanner() {
+  const monthlyRevenue = Number(plannerInputs.revenueTarget.value);
+  const averageDeal = Number(plannerInputs.averageDeal.value);
+  const replyRate = Number(plannerInputs.replyRate.value) / 100;
+  const callRate = Number(plannerInputs.callRate.value) / 100;
+  const closeRate = Number(plannerInputs.closeRatePlanner.value) / 100;
+  const sellingDays = Number(plannerInputs.workdays.value);
+
+  const pilots = Math.max(1, Math.ceil(monthlyRevenue / averageDeal));
+  const callsPerMonth = Math.ceil(pilots / closeRate);
+  const repliesPerMonth = Math.ceil(callsPerMonth / callRate);
+  const emailsPerMonth = Math.ceil(repliesPerMonth / replyRate);
+  const emailsPerWeek = Math.ceil(emailsPerMonth / 4.33);
+  const daily = Math.ceil(emailsPerWeek / sellingDays);
+
+  pilotsNeeded.textContent = numberFormatter.format(pilots);
+  weeklyEmails.textContent = numberFormatter.format(emailsPerWeek);
+  dailyProspects.textContent = numberFormatter.format(daily);
+
+  return {
+    pilots,
+    callsPerMonth,
+    repliesPerMonth,
+    emailsPerMonth,
+    emailsPerWeek,
+    daily,
+    sellingDays
+  };
+}
+
+Object.values(plannerInputs).forEach((input) => {
+  input.addEventListener("input", () => {
+    setPlannerValueLabels();
+    calculatePlanner();
+  });
+});
+
+copyDailyPlan.addEventListener("click", async () => {
+  const plan = calculatePlanner();
+  const text = [
+    "Lead Sprint daily outreach plan",
+    "",
+    `Monthly pilots needed: ${plan.pilots}`,
+    `Calls needed per month: ${plan.callsPerMonth}`,
+    `Replies needed per month: ${plan.repliesPerMonth}`,
+    `Emails needed per week: ${plan.emailsPerWeek}`,
+    `Daily prospecting target: ${plan.daily} over ${plan.sellingDays} selling days`,
+    "",
+    "Daily block:",
+    `- Find ${plan.daily} prospects with one visible lead leak`,
+    `- Send ${plan.daily} personalized teardown notes`,
+    "- Advance yesterday's saved leads",
+    "- Copy follow-ups for due prospects",
+    "- Book teardown calls before doing custom proposal work"
+  ].join("\n");
+
+  try {
+    await navigator.clipboard.writeText(text);
+    plannerNote.textContent = "Daily outreach plan copied.";
+  } catch {
+    plannerNote.textContent = "Clipboard was unavailable. Use the visible planner numbers.";
+  }
+});
 
 sellerForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -593,6 +833,8 @@ printProposal.addEventListener("click", () => {
 });
 
 renderSellerSettings();
+setPlannerValueLabels();
+calculatePlanner();
 latestAudit = buildAudit();
 renderAudit(latestAudit);
 renderProspects();

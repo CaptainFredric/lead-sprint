@@ -355,7 +355,10 @@ h3 {
 .proposal-panel,
 .diy-card,
 .settings-form,
-.close-panel {
+.close-panel,
+.planner-form,
+.planner-output,
+.cadence-grid article {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
@@ -616,6 +619,7 @@ h3 {
   font-weight: 800;
 }
 
+.pipeline-actions,
 .proposal-toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -643,7 +647,7 @@ h3 {
 
 .pipeline-table {
   width: 100%;
-  min-width: 720px;
+  min-width: 880px;
   border-collapse: collapse;
 }
 
@@ -663,6 +667,27 @@ h3 {
 
 .pipeline-table td {
   color: var(--ink);
+}
+
+.table-action {
+  min-height: 36px;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  background: #ffffff;
+  font: inherit;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.table-action + .table-action {
+  margin-left: 6px;
+}
+
+.table-action:hover,
+.table-action:focus-visible {
+  border-color: rgba(31, 157, 99, 0.55);
 }
 
 .timeline {
@@ -760,6 +785,65 @@ h3 {
   margin: 0;
   color: var(--ink);
   font-weight: 750;
+}
+
+.planner-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.planner-form {
+  display: grid;
+  gap: 18px;
+  padding: 24px;
+}
+
+.planner-output {
+  display: grid;
+  gap: 16px;
+  padding: 24px;
+  background:
+    linear-gradient(135deg, rgba(28, 109, 208, 0.1), rgba(31, 157, 99, 0.1)),
+    var(--surface);
+}
+
+.planner-output > div {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.planner-output strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 2rem;
+  line-height: 1.05;
+}
+
+.cadence-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.cadence-grid article {
+  padding: 22px;
+}
+
+.cadence-grid span {
+  display: inline-block;
+  margin-bottom: 14px;
+  color: var(--blue);
+  font-weight: 900;
+}
+
+.cadence-grid p {
+  margin: 0;
+  color: var(--muted);
 }
 
 .pricing-grid {
@@ -938,8 +1022,13 @@ h3 {
   .proof-layout,
   .console-layout,
   .diy-grid,
-  .setup-layout {
+  .setup-layout,
+  .planner-layout {
     grid-template-columns: 1fr;
+  }
+
+  .cadence-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -977,7 +1066,8 @@ h3 {
   .pricing-grid,
   .intake-form,
   .field-grid,
-  .settings-form {
+  .settings-form,
+  .cadence-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1031,7 +1121,9 @@ h3 {
   .audit-form,
   .audit-output,
   .settings-form,
-  .close-panel {
+  .close-panel,
+  .planner-form,
+  .planner-output {
     padding: 18px;
   }
 
@@ -1040,7 +1132,8 @@ h3 {
   .pipeline-head .button,
   .settings-actions,
   .settings-actions .button,
-  .close-actions .button {
+  .close-actions .button,
+  .planner-output .button {
     width: 100%;
   }
 

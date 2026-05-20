@@ -9,6 +9,7 @@ The repo contains:
 - A prospect audit console with local pipeline storage and CSV export
 - A mini-proposal generator for sales calls
 - A local seller setup panel for booking, deposit, contact, and footer identity
+- An outreach planner and pipeline follow-up workflow
 - A polished CSS system in `styles.css`
 - A practical business plan and sales workflow in `docs/`
 
