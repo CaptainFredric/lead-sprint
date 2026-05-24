@@ -11,6 +11,7 @@ The repo contains:
 - A local seller setup panel for booking, deposit, contact, and footer identity
 - An outreach planner and pipeline follow-up workflow
 - A niche campaign builder for vertical-specific angles
+- A launch QA and handoff report builder for client delivery
 - A polished CSS system in `styles.css`
 - A practical business plan and sales workflow in `docs/`
 
@@ -50,16 +51,14 @@ Then replace the generic identity in the repo when you are ready to make the pub
 
 ## Git Remote
 
-This folder is already a Git repo on `main`, but no remote is configured yet. Once you create a GitHub repo, connect it with:
+This folder is already connected to GitHub on `main`:
 
-```bash
-git remote add origin <repo-url>
-git push -u origin main
-```
+- Remote: `https://github.com/CaptainFredric/lead-sprint.git`
+- Live page: `https://captainfredric.github.io/lead-sprint/`
 
 ## GitHub Pages
 
-The site is ready for GitHub Pages from the repository root on `main`. `.nojekyll` is included so GitHub serves the static files directly.
+The site is published from the repository root on `main`. `.nojekyll` is included so GitHub serves the static files directly.
 
 ## Sales Positioning
 

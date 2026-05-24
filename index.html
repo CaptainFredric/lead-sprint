@@ -25,6 +25,7 @@
         <a href="#console">Console</a>
         <a href="#planner">Plan</a>
         <a href="#delivery">Delivery</a>
+        <a href="#handoff">QA</a>
         <a href="#setup">Setup</a>
         <a href="#start">Start</a>
       </nav>
@@ -408,7 +409,7 @@
               </thead>
               <tbody id="prospectRows">
                 <tr>
-                  <td colspan="5">No saved prospects yet.</td>
+                  <td colspan="6">No saved prospects yet.</td>
                 </tr>
               </tbody>
             </table>
@@ -529,6 +530,115 @@
             <h3>Launch and handoff</h3>
             <p>Verify mobile, test the form, record changes, and deliver the 30-day action list.</p>
           </article>
+        </div>
+      </section>
+
+      <section class="section section-band" id="handoff">
+        <div class="section-heading">
+          <p class="eyebrow">Launch QA and handoff</p>
+          <h2>Turn the finished page into a client-ready report.</h2>
+          <p>
+            Before calling a sprint complete, record what was tested, what still needs attention, and
+            the next 30-day actions. This makes the delivery feel accountable instead of subjective.
+          </p>
+        </div>
+
+        <div class="handoff-layout">
+          <form class="handoff-form" id="handoffForm">
+            <div class="field-grid">
+              <label>
+                <span>Client</span>
+                <input id="handoffClient" name="handoffClient" type="text" placeholder="Brightside HVAC">
+              </label>
+              <label>
+                <span>Live URL</span>
+                <input id="handoffUrl" name="handoffUrl" type="url" placeholder="https://example.com">
+              </label>
+              <label>
+                <span>Primary service</span>
+                <input id="handoffService" name="handoffService" type="text" placeholder="Emergency repair">
+              </label>
+              <label>
+                <span>Lead destination</span>
+                <input id="leadDestination" name="leadDestination" type="text" placeholder="owner@example.com">
+              </label>
+            </div>
+
+            <fieldset class="handoff-checks">
+              <legend>Launch checks</legend>
+              <label>
+                <input type="checkbox" name="handoffCheck" value="Mobile header and first screen fit without awkward overlap" checked>
+                <span>Mobile header and first screen fit cleanly</span>
+              </label>
+              <label>
+                <input type="checkbox" name="handoffCheck" value="Primary call to action is visible above the fold" checked>
+                <span>Primary call to action is visible above the fold</span>
+              </label>
+              <label>
+                <input type="checkbox" name="handoffCheck" value="Phone link was tested on mobile">
+                <span>Phone link was tested on mobile</span>
+              </label>
+              <label>
+                <input type="checkbox" name="handoffCheck" value="Lead form sends to the correct inbox">
+                <span>Lead form sends to the correct inbox</span>
+              </label>
+              <label>
+                <input type="checkbox" name="handoffCheck" value="Confirmation or thank-you state works">
+                <span>Confirmation or thank-you state works</span>
+              </label>
+              <label>
+                <input type="checkbox" name="handoffCheck" value="Form submit and call click events were verified">
+                <span>Form submit and call click events were verified</span>
+              </label>
+              <label>
+                <input type="checkbox" name="handoffCheck" value="Page title, description, and social preview are set">
+                <span>Page title, description, and social preview are set</span>
+              </label>
+              <label>
+                <input type="checkbox" name="handoffCheck" value="Basic speed, broken link, and console checks passed">
+                <span>Basic speed, broken link, and console checks passed</span>
+              </label>
+              <label>
+                <input type="checkbox" name="handoffCheck" value="30-day action list was written">
+                <span>30-day action list was written</span>
+              </label>
+            </fieldset>
+
+            <div class="console-actions">
+              <button class="button button-primary" id="saveHandoff" type="button">Save QA</button>
+              <button class="button button-light" id="resetHandoff" type="button">Reset QA</button>
+            </div>
+            <p class="form-note" id="handoffNote" role="status"></p>
+          </form>
+
+          <aside class="handoff-output" aria-live="polite">
+            <div class="handoff-score">
+              <span class="result-label">Launch readiness</span>
+              <strong id="handoffProgress">22%</strong>
+              <div class="progress-track" aria-hidden="true">
+                <span id="handoffProgressBar"></span>
+              </div>
+              <p id="handoffStatus">Keep testing before handoff.</p>
+            </div>
+            <div>
+              <span class="result-label">Open items</span>
+              <strong id="handoffMissing">7 checks left</strong>
+              <p id="handoffSummary">Finish the lead routing, tracking, and handoff notes before delivery.</p>
+            </div>
+            <div>
+              <span class="result-label">30-day action plan</span>
+              <ol class="close-steps" id="handoffActions"></ol>
+            </div>
+            <button class="button button-primary" id="copyHandoff" type="button">Copy handoff report</button>
+          </aside>
+        </div>
+
+        <div class="handoff-report-panel">
+          <div class="pipeline-head">
+            <h3>Client handoff report</h3>
+            <span>Generated from the QA checklist</span>
+          </div>
+          <textarea id="handoffReport" class="proposal-text" readonly></textarea>
         </div>
       </section>
 

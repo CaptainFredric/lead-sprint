@@ -10,6 +10,7 @@ const numberFormatter = new Intl.NumberFormat("en-US", {
 
 const prospectStorageKey = "leadSprintProspects";
 const sellerStorageKey = "leadSprintSeller";
+const handoffStorageKey = "leadSprintHandoff";
 
 const calculatorInputs = {
   visits: document.querySelector("#visits"),
@@ -185,6 +186,25 @@ const openBooking = document.querySelector("#openBooking");
 const openDeposit = document.querySelector("#openDeposit");
 const copyKickoff = document.querySelector("#copyKickoff");
 const footerIdentity = document.querySelector("#footerIdentity");
+const handoffForm = document.querySelector("#handoffForm");
+const handoffInputs = {
+  client: document.querySelector("#handoffClient"),
+  liveUrl: document.querySelector("#handoffUrl"),
+  service: document.querySelector("#handoffService"),
+  leadDestination: document.querySelector("#leadDestination")
+};
+const handoffChecks = [...document.querySelectorAll("input[name='handoffCheck']")];
+const handoffProgress = document.querySelector("#handoffProgress");
+const handoffProgressBar = document.querySelector("#handoffProgressBar");
+const handoffStatus = document.querySelector("#handoffStatus");
+const handoffMissing = document.querySelector("#handoffMissing");
+const handoffSummary = document.querySelector("#handoffSummary");
+const handoffActions = document.querySelector("#handoffActions");
+const handoffReport = document.querySelector("#handoffReport");
+const saveHandoff = document.querySelector("#saveHandoff");
+const resetHandoff = document.querySelector("#resetHandoff");
+const copyHandoff = document.querySelector("#copyHandoff");
+const handoffNote = document.querySelector("#handoffNote");
 
 let latestAudit = null;
 
@@ -362,6 +382,187 @@ function renderSellerSettings() {
   footerIdentity.textContent = `${seller.sellerName || "Lead Sprint"}${seller.serviceArea ? ` | ${seller.serviceArea}` : ""}${seller.sellerEmail ? ` | ${seller.sellerEmail}` : ""}`;
 }
 
+function getHandoffState() {
+  try {
+    return JSON.parse(localStorage.getItem(handoffStorageKey));
+  } catch {
+    return null;
+  }
+}
+
+function setHandoffState(state) {
+  localStorage.setItem(handoffStorageKey, JSON.stringify(state));
+}
+
+function loadHandoffState() {
+  const state = getHandoffState();
+  if (!state) {
+    return;
+  }
+
+  handoffInputs.client.value = state.client || "";
+  handoffInputs.liveUrl.value = state.liveUrl || "";
+  handoffInputs.service.value = state.service || "";
+  handoffInputs.leadDestination.value = state.leadDestination || "";
+  handoffChecks.forEach((check) => {
+    check.checked = (state.completedChecks || []).includes(check.value);
+  });
+}
+
+function handoffDetailStatus(data) {
+  const missingDetails = [
+    data.enteredClient ? "" : "client name",
+    data.enteredLiveUrl ? "" : "live URL",
+    data.enteredService ? "" : "primary service",
+    data.leadDestination ? "" : "lead destination"
+  ].filter(Boolean);
+
+  if (missingDetails.length === 0) {
+    return "Client details are complete.";
+  }
+
+  return `Add ${missingDetails.join(", ")} before sending the report.`;
+}
+
+function buildHandoffData() {
+  const completedChecks = handoffChecks.filter((check) => check.checked).map((check) => check.value);
+  const missingChecks = handoffChecks.filter((check) => !check.checked).map((check) => check.value);
+  const progress = handoffChecks.length
+    ? Math.round((completedChecks.length / handoffChecks.length) * 100)
+    : 0;
+  const clientInput = handoffInputs.client.value.trim();
+  const liveUrlInput = handoffInputs.liveUrl.value.trim();
+  const serviceInput = handoffInputs.service.value.trim();
+  const client = clientInput || latestAudit?.business || "Client";
+  const liveUrl = liveUrlInput || latestAudit?.website || "";
+  const service = serviceInput || latestAudit?.niche || "primary service";
+  const leadDestination = handoffInputs.leadDestination.value.trim();
+  const detailsComplete = Boolean(clientInput && liveUrlInput && serviceInput && leadDestination);
+
+  let status = "Keep testing before handoff.";
+  if (progress === 100 && detailsComplete) {
+    status = "Ready to hand off.";
+  } else if (progress >= 75) {
+    status = "Nearly ready. Finish the open items.";
+  } else if (progress >= 45) {
+    status = "Core checks are underway.";
+  }
+
+  return {
+    client,
+    liveUrl,
+    service,
+    leadDestination,
+    enteredClient: clientInput,
+    enteredLiveUrl: liveUrlInput,
+    enteredService: serviceInput,
+    completedChecks,
+    missingChecks,
+    progress,
+    detailsComplete,
+    status,
+    generatedAt: new Date().toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric"
+    })
+  };
+}
+
+function makeHandoffActions(data) {
+  const actions = [];
+  if (data.missingChecks.some((item) => item.includes("Lead form"))) {
+    actions.push("Run another test lead with the client watching, then confirm inbox delivery.");
+  }
+  if (data.missingChecks.some((item) => item.includes("events"))) {
+    actions.push("Verify form submit and call-click events after the first live inquiry.");
+  }
+  if (data.missingChecks.some((item) => item.includes("30-day"))) {
+    actions.push("Write the next three conversion improvements before pitching the care plan.");
+  }
+  if (data.missingChecks.some((item) => item.includes("speed"))) {
+    actions.push("Check load speed, broken links, and console errors after launch.");
+  }
+
+  return [
+    ...actions,
+    `Review ${data.service} inquiries weekly and note where ready buyers hesitate.`,
+    "Add one fresh proof point, review, or before/after note near the main call to action.",
+    "Offer the care plan once the client has seen the first tracked lead path working."
+  ].slice(0, 3);
+}
+
+function makeHandoffReport(data) {
+  const seller = getSellerSettings();
+  const completed = data.completedChecks.length
+    ? data.completedChecks.map((item) => `- ${item}`).join("\n")
+    : "- No launch checks completed yet";
+  const missing = data.missingChecks.length
+    ? data.missingChecks.map((item) => `- ${item}`).join("\n")
+    : "- No open launch checks";
+  const missingDetails = [
+    data.enteredClient ? "" : "- Client name",
+    data.enteredLiveUrl ? "" : "- Live URL",
+    data.enteredService ? "" : "- Primary service",
+    data.leadDestination ? "" : "- Lead destination"
+  ].filter(Boolean);
+  const actions = makeHandoffActions(data).map((item) => `- ${item}`).join("\n");
+  const sellerBlock = [
+    seller.sellerName ? `Prepared by: ${seller.sellerName}` : "Prepared by: Lead Sprint",
+    seller.sellerEmail ? `Contact: ${seller.sellerEmail}` : "",
+    seller.serviceArea ? `Service area: ${seller.serviceArea}` : ""
+  ].filter(Boolean);
+
+  return [
+    `Lead Sprint Handoff Report: ${data.client}`,
+    ...sellerBlock,
+    `Generated: ${data.generatedAt}`,
+    "",
+    `Live URL: ${data.liveUrl || "not added yet"}`,
+    `Primary service: ${data.service}`,
+    `Lead destination: ${data.leadDestination || "not added yet"}`,
+    `Launch readiness: ${data.progress}%`,
+    "",
+    "Completed checks:",
+    completed,
+    "",
+    "Open checks:",
+    missing,
+    "",
+    "Open details:",
+    missingDetails.length ? missingDetails.join("\n") : "- No open details",
+    "",
+    "Client note:",
+    data.progress === 100 && data.detailsComplete
+      ? "The sprint is ready for handoff. The page, lead path, and measurement checks have been verified."
+      : "The sprint is close, but the open checks should be finished before the delivery window is considered complete.",
+    "",
+    "Next 30-day actions:",
+    actions,
+    "",
+    "Care plan offer:",
+    "Keep the lead path healthy with monthly edits, form tests, analytics notes, and small conversion improvements."
+  ].join("\n");
+}
+
+function renderHandoff() {
+  const data = buildHandoffData();
+  const missingCount = data.missingChecks.length;
+  const actions = makeHandoffActions(data);
+
+  handoffProgress.textContent = `${data.progress}%`;
+  handoffProgressBar.style.width = `${data.progress}%`;
+  handoffStatus.textContent = data.status;
+  handoffMissing.textContent = missingCount === 1 ? "1 check left" : `${missingCount} checks left`;
+  handoffSummary.textContent = missingCount === 0
+    ? handoffDetailStatus(data)
+    : "Finish the lead routing, tracking, mobile, and report checks before delivery.";
+  handoffActions.innerHTML = actions.map((action) => `<li>${escapeHtml(action)}</li>`).join("");
+  handoffReport.value = makeHandoffReport(data);
+
+  return data;
+}
+
 function selectedCampaign() {
   return campaignData[campaignNiche.value] || campaignData.homeServices;
 }
@@ -459,6 +660,7 @@ function renderAudit(audit) {
   auditNext.textContent = audit.nextAction;
   proposalText.value = makeProposal(audit);
   proposalMeta.textContent = `${pack.name}, ${formatter.format(pack.price)}, ${pack.timeline}`;
+  renderHandoff();
 }
 
 function makeAuditEmail(audit) {
@@ -921,6 +1123,49 @@ copyDailyPlan.addEventListener("click", async () => {
   }
 });
 
+handoffForm.addEventListener("input", () => {
+  renderHandoff();
+  handoffNote.textContent = "";
+});
+
+handoffForm.addEventListener("change", () => {
+  renderHandoff();
+  handoffNote.textContent = "";
+});
+
+saveHandoff.addEventListener("click", () => {
+  const data = renderHandoff();
+  setHandoffState({
+    client: handoffInputs.client.value.trim(),
+    liveUrl: handoffInputs.liveUrl.value.trim(),
+    service: handoffInputs.service.value.trim(),
+    leadDestination: handoffInputs.leadDestination.value.trim(),
+    completedChecks: data.completedChecks,
+    updatedAt: new Date().toISOString()
+  });
+  handoffNote.textContent = "Launch QA saved locally in this browser.";
+});
+
+resetHandoff.addEventListener("click", () => {
+  localStorage.removeItem(handoffStorageKey);
+  handoffForm.reset();
+  renderHandoff();
+  handoffNote.textContent = "Launch QA reset.";
+});
+
+copyHandoff.addEventListener("click", async () => {
+  renderHandoff();
+
+  try {
+    await navigator.clipboard.writeText(handoffReport.value);
+    handoffNote.textContent = "Handoff report copied.";
+  } catch {
+    handoffReport.focus();
+    handoffReport.select();
+    handoffNote.textContent = "Clipboard was unavailable. The handoff report is selected.";
+  }
+});
+
 sellerForm.addEventListener("submit", (event) => {
   event.preventDefault();
   setSellerSettings({
@@ -933,6 +1178,7 @@ sellerForm.addEventListener("submit", (event) => {
   renderSellerSettings();
   latestAudit = latestAudit || buildAudit();
   renderAudit(latestAudit);
+  renderHandoff();
   sellerNote.textContent = "Seller setup saved locally in this browser.";
 });
 
@@ -941,6 +1187,7 @@ resetSeller.addEventListener("click", () => {
   renderSellerSettings();
   latestAudit = latestAudit || buildAudit();
   renderAudit(latestAudit);
+  renderHandoff();
   sellerNote.textContent = "Seller setup reset.";
 });
 
@@ -999,8 +1246,10 @@ printProposal.addEventListener("click", () => {
 
 renderSellerSettings();
 renderCampaign();
+loadHandoffState();
 setPlannerValueLabels();
 calculatePlanner();
 latestAudit = buildAudit();
 renderAudit(latestAudit);
 renderProspects();
+renderHandoff();

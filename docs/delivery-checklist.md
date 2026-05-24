@@ -98,6 +98,25 @@ Deliver:
 - Care plan offer
 - Referral request
 
+Use the launch QA and handoff builder on the live page before sending the final note. Save the QA state locally, copy the handoff report, and only mark the sprint complete when the report reflects the tested live URL, lead destination, completed checks, open checks, and next 30-day actions.
+
+## Handoff Report Structure
+
+Include:
+
+- Client name
+- Live URL
+- Primary service
+- Lead destination
+- Launch readiness percentage
+- Completed checks
+- Open checks
+- Client note
+- Next 30-day actions
+- Care plan offer
+
+The report should make the value of the sprint visible: diagnosis, copy, implementation, form routing, mobile QA, tracking verification, and a practical next-step plan. It should also protect scope by making unfinished items explicit instead of letting them become vague ongoing support.
+
 ## Scope Boundaries
 
 Included:
