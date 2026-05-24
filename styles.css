@@ -363,7 +363,11 @@ h3 {
 .campaign-output,
 .handoff-form,
 .handoff-output,
-.handoff-report-panel {
+.handoff-report-panel,
+.care-form,
+.care-output,
+.care-rhythm article,
+.care-script-panel {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
@@ -1016,6 +1020,76 @@ h3 {
   line-height: 1.05;
 }
 
+.care-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.care-form {
+  display: grid;
+  gap: 18px;
+  padding: 24px;
+}
+
+.care-output {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  padding: 24px;
+  background:
+    linear-gradient(135deg, rgba(31, 157, 99, 0.1), rgba(232, 102, 79, 0.08)),
+    var(--surface);
+}
+
+.care-output > div {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.care-output strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 1.85rem;
+  line-height: 1.05;
+}
+
+.care-output .button,
+.care-output .form-note {
+  grid-column: 1 / -1;
+}
+
+.care-rhythm {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.care-rhythm article {
+  padding: 22px;
+}
+
+.care-rhythm span {
+  display: inline-block;
+  margin-bottom: 14px;
+  color: var(--blue);
+  font-weight: 900;
+}
+
+.care-rhythm p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.care-script-panel {
+  margin-top: 18px;
+  overflow: hidden;
+}
+
 .cadence-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1218,11 +1292,13 @@ h3 {
   .setup-layout,
   .planner-layout,
   .campaign-layout,
-  .handoff-layout {
+  .handoff-layout,
+  .care-layout {
     grid-template-columns: 1fr;
   }
 
-  .cadence-grid {
+  .cadence-grid,
+  .care-rhythm {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -1263,7 +1339,9 @@ h3 {
   .field-grid,
   .settings-form,
   .cadence-grid,
-  .campaign-metrics {
+  .campaign-metrics,
+  .care-output,
+  .care-rhythm {
     grid-template-columns: 1fr;
   }
 
@@ -1323,7 +1401,9 @@ h3 {
   .campaign-form,
   .campaign-output,
   .handoff-form,
-  .handoff-output {
+  .handoff-output,
+  .care-form,
+  .care-output {
     padding: 18px;
   }
 
@@ -1334,7 +1414,8 @@ h3 {
   .settings-actions .button,
   .close-actions .button,
   .planner-output .button,
-  .handoff-output .button {
+  .handoff-output .button,
+  .care-output .button {
     width: 100%;
   }
 

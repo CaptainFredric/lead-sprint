@@ -172,6 +172,21 @@ const weeklyEmails = document.querySelector("#weeklyEmails");
 const dailyProspects = document.querySelector("#dailyProspects");
 const copyDailyPlan = document.querySelector("#copyDailyPlan");
 const plannerNote = document.querySelector("#plannerNote");
+const careInputs = {
+  careSprintClients: document.querySelector("#careSprintClients"),
+  careConversionRate: document.querySelector("#careConversionRate"),
+  careFee: document.querySelector("#careFee"),
+  careHours: document.querySelector("#careHours"),
+  careMonths: document.querySelector("#careMonths")
+};
+const careValueLabels = document.querySelectorAll("[data-care-value-for]");
+const careClients = document.querySelector("#careClients");
+const careMrr = document.querySelector("#careMrr");
+const careArr = document.querySelector("#careArr");
+const careLoad = document.querySelector("#careLoad");
+const copyCarePitch = document.querySelector("#copyCarePitch");
+const careNote = document.querySelector("#careNote");
+const carePitch = document.querySelector("#carePitch");
 const sellerForm = document.querySelector("#sellerForm");
 const sellerName = document.querySelector("#sellerName");
 const sellerEmail = document.querySelector("#sellerEmail");
@@ -541,7 +556,7 @@ function makeHandoffReport(data) {
     actions,
     "",
     "Care plan offer:",
-    "Keep the lead path healthy with monthly edits, form tests, analytics notes, and small conversion improvements."
+    `Keep the lead path healthy with monthly edits, form tests, analytics notes, and small conversion improvements for ${formatter.format(Number(careInputs.careFee.value))}/month.`
   ].join("\n");
 }
 
@@ -1096,6 +1111,107 @@ Object.values(plannerInputs).forEach((input) => {
   });
 });
 
+function formatHours(value) {
+  return Number.isInteger(value) ? `${value} hrs` : `${value.toFixed(1)} hrs`;
+}
+
+function setCareValueLabels() {
+  careValueLabels.forEach((label) => {
+    const target = careInputs[label.dataset.careValueFor];
+    if (!target) {
+      return;
+    }
+
+    const value = Number(target.value);
+    if (target.id === "careFee") {
+      label.textContent = formatter.format(value);
+      return;
+    }
+
+    if (target.id === "careConversionRate") {
+      label.textContent = `${value}%`;
+      return;
+    }
+
+    if (target.id === "careHours") {
+      label.textContent = value.toFixed(1);
+      return;
+    }
+
+    if (target.id === "careMonths") {
+      label.textContent = `${value} months`;
+      return;
+    }
+
+    label.textContent = numberFormatter.format(value);
+  });
+}
+
+function calculateCarePlan() {
+  const sprintClients = Number(careInputs.careSprintClients.value);
+  const conversionRate = Number(careInputs.careConversionRate.value) / 100;
+  const monthlyFee = Number(careInputs.careFee.value);
+  const hoursPerClient = Number(careInputs.careHours.value);
+  const months = Number(careInputs.careMonths.value);
+  const retainedClients = Math.max(1, Math.ceil(sprintClients * conversionRate * months));
+  const monthlyRevenue = retainedClients * monthlyFee;
+  const annualRunRate = monthlyRevenue * 12;
+  const monthlyHours = retainedClients * hoursPerClient;
+
+  careClients.textContent = numberFormatter.format(retainedClients);
+  careMrr.textContent = formatter.format(monthlyRevenue);
+  careArr.textContent = formatter.format(annualRunRate);
+  careLoad.textContent = formatHours(monthlyHours);
+
+  const plan = {
+    sprintClients,
+    conversionRate,
+    monthlyFee,
+    hoursPerClient,
+    months,
+    retainedClients,
+    monthlyRevenue,
+    annualRunRate,
+    monthlyHours
+  };
+  carePitch.value = makeCarePitch(plan);
+  return plan;
+}
+
+function makeCarePitch(plan) {
+  const seller = getSellerSettings();
+  const bookingLine = seller.bookingUrl
+    ? `If you want to keep momentum, we can confirm it here: ${seller.bookingUrl}`
+    : "If you want to keep momentum, I can add this to the handoff plan today.";
+
+  return [
+    "Care Plan Close Script",
+    "",
+    "The sprint gets the lead path live and tested. The care plan keeps it from quietly drifting out of shape.",
+    "",
+    `For ${formatter.format(plan.monthlyFee)}/month, I will handle monthly form testing, uptime checks, analytics notes, small copy or content edits, and one practical conversion improvement at a time.`,
+    "",
+    `The delivery load is designed to stay lean: about ${formatHours(plan.hoursPerClient)} per client per month, with a clear monthly note showing what was checked, what changed, and what to watch next.`,
+    "",
+    `If ${plan.retainedClients} sprint clients stay on care over ${plan.months} months, that creates ${formatter.format(plan.monthlyRevenue)} in monthly recurring revenue and a ${formatter.format(plan.annualRunRate)} annual run rate.`,
+    "",
+    "Suggested close:",
+    "Would you like me to keep testing the form, watching the lead path, and making one small improvement each month so the site keeps earning instead of becoming another finished project?",
+    "",
+    bookingLine,
+    "",
+    `Prepared by ${seller.sellerName || "Lead Sprint"}`
+  ].join("\n");
+}
+
+Object.values(careInputs).forEach((input) => {
+  input.addEventListener("input", () => {
+    setCareValueLabels();
+    calculateCarePlan();
+    renderHandoff();
+  });
+});
+
 copyDailyPlan.addEventListener("click", async () => {
   const plan = calculatePlanner();
   const text = [
@@ -1120,6 +1236,19 @@ copyDailyPlan.addEventListener("click", async () => {
     plannerNote.textContent = "Daily outreach plan copied.";
   } catch {
     plannerNote.textContent = "Clipboard was unavailable. Use the visible planner numbers.";
+  }
+});
+
+copyCarePitch.addEventListener("click", async () => {
+  calculateCarePlan();
+
+  try {
+    await navigator.clipboard.writeText(carePitch.value);
+    careNote.textContent = "Care plan pitch copied.";
+  } catch {
+    carePitch.focus();
+    carePitch.select();
+    careNote.textContent = "Clipboard was unavailable. The care pitch is selected.";
   }
 });
 
@@ -1179,6 +1308,7 @@ sellerForm.addEventListener("submit", (event) => {
   latestAudit = latestAudit || buildAudit();
   renderAudit(latestAudit);
   renderHandoff();
+  calculateCarePlan();
   sellerNote.textContent = "Seller setup saved locally in this browser.";
 });
 
@@ -1188,6 +1318,7 @@ resetSeller.addEventListener("click", () => {
   latestAudit = latestAudit || buildAudit();
   renderAudit(latestAudit);
   renderHandoff();
+  calculateCarePlan();
   sellerNote.textContent = "Seller setup reset.";
 });
 
@@ -1249,6 +1380,8 @@ renderCampaign();
 loadHandoffState();
 setPlannerValueLabels();
 calculatePlanner();
+setCareValueLabels();
+calculateCarePlan();
 latestAudit = buildAudit();
 renderAudit(latestAudit);
 renderProspects();

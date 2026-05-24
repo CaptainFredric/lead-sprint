@@ -12,6 +12,7 @@ The repo contains:
 - An outreach planner and pipeline follow-up workflow
 - A niche campaign builder for vertical-specific angles
 - A launch QA and handoff report builder for client delivery
+- A care plan converter for monthly recurring revenue projections and close scripts
 - A polished CSS system in `styles.css`
 - A practical business plan and sales workflow in `docs/`
 

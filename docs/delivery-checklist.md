@@ -100,6 +100,8 @@ Deliver:
 
 Use the launch QA and handoff builder on the live page before sending the final note. Save the QA state locally, copy the handoff report, and only mark the sprint complete when the report reflects the tested live URL, lead destination, completed checks, open checks, and next 30-day actions.
 
+Use the care plan converter immediately after the handoff report. Keep the pitch tied to protection of the lead path: monthly form testing, analytics notes, uptime checks, small edits, and one practical conversion improvement. Do not sell vague ongoing support.
+
 ## Handoff Report Structure
 
 Include:

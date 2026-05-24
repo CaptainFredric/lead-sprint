@@ -26,6 +26,7 @@
         <a href="#planner">Plan</a>
         <a href="#delivery">Delivery</a>
         <a href="#handoff">QA</a>
+        <a href="#care">Care</a>
         <a href="#setup">Setup</a>
         <a href="#start">Start</a>
       </nav>
@@ -667,6 +668,99 @@
             <p>Monthly edits, uptime checks, analytics notes, form testing, and small conversion fixes.</p>
             <a class="text-link" href="#start">Offer at handoff</a>
           </article>
+        </div>
+      </section>
+
+      <section class="section" id="care">
+        <div class="section-heading">
+          <p class="eyebrow">Care plan converter</p>
+          <h2>Turn handoffs into predictable monthly revenue.</h2>
+          <p>
+            Use this at the end of a successful sprint to price the upkeep plan, show the revenue
+            runway, and copy a clean retainer pitch without inventing it from scratch.
+          </p>
+        </div>
+
+        <div class="care-layout">
+          <form class="care-form" id="careForm">
+            <label class="range-row" for="careSprintClients">
+              <span>Sprint clients per month</span>
+              <strong data-care-value-for="careSprintClients">4</strong>
+              <input id="careSprintClients" name="careSprintClients" type="range" min="1" max="12" step="1" value="4">
+            </label>
+            <label class="range-row" for="careConversionRate">
+              <span>Handoff-to-care conversion</span>
+              <strong data-care-value-for="careConversionRate">40%</strong>
+              <input id="careConversionRate" name="careConversionRate" type="range" min="10" max="90" step="5" value="40">
+            </label>
+            <label class="range-row" for="careFee">
+              <span>Monthly care fee</span>
+              <strong data-care-value-for="careFee">$250</strong>
+              <input id="careFee" name="careFee" type="range" min="150" max="750" step="25" value="250">
+            </label>
+            <label class="range-row" for="careHours">
+              <span>Hours per client per month</span>
+              <strong data-care-value-for="careHours">2.0</strong>
+              <input id="careHours" name="careHours" type="range" min="1" max="8" step="0.5" value="2">
+            </label>
+            <label class="range-row" for="careMonths">
+              <span>Projection window</span>
+              <strong data-care-value-for="careMonths">6 months</strong>
+              <input id="careMonths" name="careMonths" type="range" min="3" max="12" step="1" value="6">
+            </label>
+          </form>
+
+          <aside class="care-output" aria-live="polite">
+            <div>
+              <span class="result-label">Care clients projected</span>
+              <strong id="careClients">10</strong>
+            </div>
+            <div>
+              <span class="result-label">Monthly recurring revenue</span>
+              <strong id="careMrr">$2,500</strong>
+            </div>
+            <div>
+              <span class="result-label">Annual run rate</span>
+              <strong id="careArr">$30,000</strong>
+            </div>
+            <div>
+              <span class="result-label">Monthly delivery load</span>
+              <strong id="careLoad">20 hrs</strong>
+            </div>
+            <button class="button button-primary" id="copyCarePitch" type="button">Copy care pitch</button>
+            <p class="form-note" id="careNote" role="status"></p>
+          </aside>
+        </div>
+
+        <div class="care-rhythm" aria-label="Care plan delivery rhythm">
+          <article>
+            <span>Week 1</span>
+            <h3>Form and uptime check</h3>
+            <p>Send a test lead, confirm routing, and fix any broken contact path.</p>
+          </article>
+          <article>
+            <span>Week 2</span>
+            <h3>Analytics note</h3>
+            <p>Summarize calls, forms, top pages, and one practical conversion observation.</p>
+          </article>
+          <article>
+            <span>Week 3</span>
+            <h3>Small improvement</h3>
+            <p>Ship one useful edit: proof, FAQ, service copy, button text, or trust signal.</p>
+          </article>
+          <article>
+            <span>Week 4</span>
+            <h3>Renewal touch</h3>
+            <p>Show what was checked, what changed, and the next small win.</p>
+          </article>
+        </div>
+
+        <div class="care-script-panel">
+          <div class="pipeline-head">
+            <h3>Care plan close script</h3>
+            <span>Updates from the projection inputs</span>
+          </div>
+          <textarea id="carePitch" class="proposal-text" readonly></textarea>
         </div>
       </section>
 
