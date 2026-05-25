@@ -205,6 +205,23 @@ const monthlyRenewalCue = document.querySelector("#monthlyRenewalCue");
 const copyMonthlyReport = document.querySelector("#copyMonthlyReport");
 const monthlyReport = document.querySelector("#monthlyReport");
 const monthlyNote = document.querySelector("#monthlyNote");
+const proofLoopForm = document.querySelector("#proofLoopForm");
+const proofInputs = {
+  client: document.querySelector("#proofClient"),
+  referralTarget: document.querySelector("#proofReferralTarget"),
+  permission: document.querySelector("#proofPermission"),
+  channel: document.querySelector("#proofChannel"),
+  win: document.querySelector("#proofWin"),
+  metric: document.querySelector("#proofMetric"),
+  quote: document.querySelector("#proofQuote")
+};
+const proofScore = document.querySelector("#proofScore");
+const proofStatus = document.querySelector("#proofStatus");
+const proofAsk = document.querySelector("#proofAsk");
+const proofUse = document.querySelector("#proofUse");
+const copyProofKit = document.querySelector("#copyProofKit");
+const proofKit = document.querySelector("#proofKit");
+const proofNote = document.querySelector("#proofNote");
 const sellerForm = document.querySelector("#sellerForm");
 const sellerName = document.querySelector("#sellerName");
 const sellerEmail = document.querySelector("#sellerEmail");
@@ -714,6 +731,8 @@ function renderAudit(audit) {
   proposalText.value = makeProposal(audit);
   proposalMeta.textContent = `${pack.name}, ${formatter.format(pack.price)}, ${pack.timeline}`;
   renderHandoff();
+  renderMonthlyReport();
+  renderProofLoop();
 }
 
 function makeAuditEmail(audit) {
@@ -1341,12 +1360,127 @@ function renderMonthlyReport() {
   return data;
 }
 
+function buildProofLoopData() {
+  const monthly = buildMonthlyReportData();
+  const client = proofInputs.client.value.trim() || monthly.client;
+  const referralTarget = proofInputs.referralTarget.value.trim() || "another local service owner";
+  const win = proofInputs.win.value.trim() || monthly.update || monthly.observation || "The lead path is now tested and easier to maintain.";
+  const metric = proofInputs.metric.value.trim() || `${numberFormatter.format(monthly.leadActions)} tracked lead actions reviewed in ${monthly.periodLabel}`;
+  const quote = proofInputs.quote.value.trim();
+  const permission = proofInputs.permission.value;
+  const channel = proofInputs.channel.value;
+  const permissionScore = permission === "public" ? 22 : permission === "anonymized" ? 16 : 8;
+  const score = Math.min(
+    100,
+    (win ? 24 : 0) + (metric ? 20 : 0) + (quote ? 25 : 0) + permissionScore + (referralTarget ? 9 : 0) + 5
+  );
+
+  let status = "Ask for a short quote and one referral.";
+  if (score >= 90) {
+    status = "Ready to use in outreach and referral asks.";
+  } else if (!quote) {
+    status = "Ask for one plain-language client quote.";
+  } else if (permission === "private") {
+    status = "Use this privately until permission improves.";
+  }
+
+  let ask = "Ask for permission to use an anonymized version of the monthly win.";
+  if (permission === "public") {
+    ask = "Ask for approval to use the quote, client name, and short case-study snippet.";
+  } else if (permission === "private") {
+    ask = "Ask whether this can move from private note to anonymized proof.";
+  }
+
+  let use = "Add this to outreach as a short proof note, not a full case study yet.";
+  if (score >= 90 && permission === "public") {
+    use = "Use this as a named mini case study in outreach, proposals, and follow-ups.";
+  } else if (score >= 75) {
+    use = "Use this as anonymized proof in teardown emails and sales calls.";
+  }
+
+  return {
+    client,
+    referralTarget,
+    win,
+    metric,
+    quote,
+    permission,
+    channel,
+    score,
+    status,
+    ask,
+    use
+  };
+}
+
+function makeProofKit(data) {
+  const seller = getSellerSettings();
+  const channelLine = data.channel === "phone"
+    ? "Best channel: bring this up on the next call, then send the written version."
+    : data.channel === "linkedin"
+      ? "Best channel: use this as a short LinkedIn follow-up after sending the monthly note."
+      : "Best channel: send this by email after the monthly note.";
+  const permissionLabel = data.permission === "public"
+    ? "Public case study"
+    : data.permission === "private"
+      ? "Private sales note"
+      : "Anonymized proof";
+  const quoteLine = data.quote || "If you are comfortable, could you send one sentence about what feels clearer or easier now?";
+  const snippetClient = data.permission === "public" ? data.client : "a local service business";
+
+  return [
+    `Proof Kit: ${data.client}`,
+    `Permission level: ${permissionLabel}`,
+    channelLine,
+    "",
+    "Testimonial request:",
+    `Hi ${data.client},`,
+    "",
+    "I am wrapping the monthly care note and wanted to ask a quick favor.",
+    "",
+    `The useful win this month was: ${data.win}`,
+    `The simple proof point is: ${data.metric}.`,
+    "",
+    "Would you be comfortable with me using a short version of that as proof when explaining the Lead Sprint to similar businesses?",
+    data.permission === "public"
+      ? "If yes, I would use your business name and keep the wording short."
+      : "If yes, I can keep it anonymized and avoid using your business name.",
+    "",
+    "A one-sentence quote is plenty. Something like:",
+    `"${quoteLine}"`,
+    "",
+    "Mini case-study snippet:",
+    `${snippetClient} used a focused Lead Sprint and care plan to keep the website lead path tested, clearer, and easier to improve. ${data.win} ${data.metric}.`,
+    data.quote ? `Client reaction: "${data.quote}"` : "Client reaction: quote requested.",
+    "",
+    "Referral ask:",
+    `Do you know ${data.referralTarget} who might benefit from the same kind of website lead-path cleanup?`,
+    "If yes, I can send a short teardown note rather than a big agency pitch.",
+    "",
+    "Outreach proof line:",
+    `I recently helped ${snippetClient} keep their website lead path healthier: ${data.metric.toLowerCase()}, with the next improvement already planned.`,
+    "",
+    `Prepared by ${seller.sellerName || "Lead Sprint"}`
+  ].join("\n");
+}
+
+function renderProofLoop() {
+  const data = buildProofLoopData();
+  proofScore.textContent = data.score;
+  proofStatus.textContent = data.status;
+  proofAsk.textContent = data.ask;
+  proofUse.textContent = data.use;
+  proofKit.value = makeProofKit(data);
+  return data;
+}
+
 Object.values(careInputs).forEach((input) => {
   input.addEventListener("input", () => {
     setCareValueLabels();
     calculateCarePlan();
     renderHandoff();
     renderMonthlyReport();
+    renderProofLoop();
   });
 });
 
@@ -1392,11 +1526,13 @@ copyCarePitch.addEventListener("click", async () => {
 
 monthlyReportForm.addEventListener("input", () => {
   renderMonthlyReport();
+  renderProofLoop();
   monthlyNote.textContent = "";
 });
 
 monthlyReportForm.addEventListener("change", () => {
   renderMonthlyReport();
+  renderProofLoop();
   monthlyNote.textContent = "";
 });
 
@@ -1413,15 +1549,40 @@ copyMonthlyReport.addEventListener("click", async () => {
   }
 });
 
+proofLoopForm.addEventListener("input", () => {
+  renderProofLoop();
+  proofNote.textContent = "";
+});
+
+proofLoopForm.addEventListener("change", () => {
+  renderProofLoop();
+  proofNote.textContent = "";
+});
+
+copyProofKit.addEventListener("click", async () => {
+  renderProofLoop();
+
+  try {
+    await navigator.clipboard.writeText(proofKit.value);
+    proofNote.textContent = "Proof kit copied.";
+  } catch {
+    proofKit.focus();
+    proofKit.select();
+    proofNote.textContent = "Clipboard was unavailable. The proof kit is selected.";
+  }
+});
+
 handoffForm.addEventListener("input", () => {
   renderHandoff();
   renderMonthlyReport();
+  renderProofLoop();
   handoffNote.textContent = "";
 });
 
 handoffForm.addEventListener("change", () => {
   renderHandoff();
   renderMonthlyReport();
+  renderProofLoop();
   handoffNote.textContent = "";
 });
 
@@ -1473,6 +1634,7 @@ sellerForm.addEventListener("submit", (event) => {
   renderHandoff();
   calculateCarePlan();
   renderMonthlyReport();
+  renderProofLoop();
   sellerNote.textContent = "Seller setup saved locally in this browser.";
 });
 
@@ -1484,6 +1646,7 @@ resetSeller.addEventListener("click", () => {
   renderHandoff();
   calculateCarePlan();
   renderMonthlyReport();
+  renderProofLoop();
   sellerNote.textContent = "Seller setup reset.";
 });
 
@@ -1553,3 +1716,4 @@ renderAudit(latestAudit);
 renderProspects();
 renderHandoff();
 renderMonthlyReport();
+renderProofLoop();

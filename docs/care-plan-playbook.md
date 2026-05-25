@@ -62,6 +62,28 @@ Use the monthly client report builder on the live page before each renewal touch
 
 The report is not meant to be a giant analytics deck. It is a compact proof-of-work note that makes the care plan feel active and worth continuing.
 
+## Proof and Referral Loop
+
+After a useful monthly note, use the proof and referral kit generator. The goal is to turn quiet client progress into sales material without overclaiming.
+
+Capture:
+
+- Client name
+- Similar buyer to ask for
+- Proof permission level
+- Best channel
+- Visible win
+- Simple metric
+- Client quote or plain-language reaction
+
+Use the generated kit for three things:
+
+- A testimonial request
+- A short case-study snippet
+- A referral ask
+
+Keep permission clean. If the client only allows private use, keep the note internal. If they allow anonymized proof, use the result in outreach without the business name. If they approve public proof, use it in proposals and follow-ups as a named mini case study.
+
 ## Close Script
 
 Use after the QA report:

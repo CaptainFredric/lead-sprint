@@ -370,7 +370,10 @@ h3 {
 .care-script-panel,
 .monthly-form,
 .monthly-output,
-.monthly-report-panel {
+.monthly-report-panel,
+.proof-loop-form,
+.proof-loop-output,
+.proof-kit-panel {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
@@ -1171,6 +1174,84 @@ h3 {
   overflow: hidden;
 }
 
+.proof-loop-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+  gap: 18px;
+  align-items: start;
+  margin-top: 18px;
+}
+
+.proof-loop-form {
+  display: grid;
+  gap: 18px;
+  padding: 0 24px 24px;
+  overflow: hidden;
+}
+
+.proof-loop-form .compact-head {
+  margin: 0 -24px;
+}
+
+.proof-loop-form label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.proof-loop-form input,
+.proof-loop-form select,
+.proof-loop-form textarea {
+  min-height: 46px;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--ink);
+  background: #ffffff;
+  font: inherit;
+}
+
+.proof-loop-form textarea {
+  min-height: 92px;
+  resize: vertical;
+  line-height: 1.45;
+}
+
+.proof-loop-output {
+  display: grid;
+  gap: 16px;
+  padding: 24px;
+  background:
+    linear-gradient(135deg, rgba(232, 102, 79, 0.1), rgba(31, 157, 99, 0.1)),
+    var(--surface);
+}
+
+.proof-loop-output > div {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.proof-loop-output strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
+.proof-loop-output p {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.proof-kit-panel {
+  margin-top: 18px;
+  overflow: hidden;
+}
+
 .cadence-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1375,7 +1456,8 @@ h3 {
   .campaign-layout,
   .handoff-layout,
   .care-layout,
-  .monthly-layout {
+  .monthly-layout,
+  .proof-loop-layout {
     grid-template-columns: 1fr;
   }
 
@@ -1486,15 +1568,18 @@ h3 {
   .handoff-output,
   .care-form,
   .care-output,
-  .monthly-output {
+  .monthly-output,
+  .proof-loop-output {
     padding: 18px;
   }
 
-  .monthly-form {
+  .monthly-form,
+  .proof-loop-form {
     padding: 0 18px 18px;
   }
 
-  .monthly-form .compact-head {
+  .monthly-form .compact-head,
+  .proof-loop-form .compact-head {
     margin: 0 -18px;
   }
 
@@ -1507,7 +1592,8 @@ h3 {
   .planner-output .button,
   .handoff-output .button,
   .care-output .button,
-  .monthly-output .button {
+  .monthly-output .button,
+  .proof-loop-output .button {
     width: 100%;
   }
 

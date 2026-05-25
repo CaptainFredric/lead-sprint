@@ -835,6 +835,79 @@
           </div>
           <textarea id="monthlyReport" class="proposal-text" readonly></textarea>
         </div>
+
+        <div class="proof-loop-layout">
+          <form class="proof-loop-form" id="proofLoopForm">
+            <div class="pipeline-head compact-head">
+              <h3>Proof and referral loop</h3>
+              <span>Turn care wins into the next warm lead</span>
+            </div>
+            <div class="field-grid">
+              <label>
+                <span>Client</span>
+                <input id="proofClient" name="proofClient" type="text" placeholder="Brightside HVAC">
+              </label>
+              <label>
+                <span>Similar buyer to ask for</span>
+                <input id="proofReferralTarget" name="proofReferralTarget" type="text" placeholder="another local service owner">
+              </label>
+              <label>
+                <span>Proof permission</span>
+                <select id="proofPermission" name="proofPermission">
+                  <option value="anonymized">Anonymized proof</option>
+                  <option value="public">Public case study</option>
+                  <option value="private">Private sales note only</option>
+                </select>
+              </label>
+              <label>
+                <span>Best channel</span>
+                <select id="proofChannel" name="proofChannel">
+                  <option value="email">Email</option>
+                  <option value="phone">Phone follow-up</option>
+                  <option value="linkedin">LinkedIn</option>
+                </select>
+              </label>
+            </div>
+            <label>
+              <span>Visible win</span>
+              <textarea id="proofWin" name="proofWin" rows="3" placeholder="The quote path is now tested monthly and easier to use from mobile."></textarea>
+            </label>
+            <label>
+              <span>Simple metric</span>
+              <input id="proofMetric" name="proofMetric" type="text" placeholder="14 tracked lead actions reviewed this month">
+            </label>
+            <label>
+              <span>Client quote or plain-language reaction</span>
+              <textarea id="proofQuote" name="proofQuote" rows="3" placeholder="It is easier to see what is working and what needs attention."></textarea>
+            </label>
+            <p class="form-note" id="proofNote" role="status"></p>
+          </form>
+
+          <aside class="proof-loop-output" aria-live="polite">
+            <div>
+              <span class="result-label">Proof readiness</span>
+              <strong id="proofScore">68</strong>
+              <p id="proofStatus">Ask for a short quote and one referral.</p>
+            </div>
+            <div>
+              <span class="result-label">Best ask</span>
+              <p id="proofAsk">Ask for permission to use an anonymized version of the monthly win.</p>
+            </div>
+            <div>
+              <span class="result-label">Use it for</span>
+              <p id="proofUse">Add this to outreach as a short proof note, not a full case study yet.</p>
+            </div>
+            <button class="button button-primary" id="copyProofKit" type="button">Copy proof kit</button>
+          </aside>
+        </div>
+
+        <div class="proof-kit-panel">
+          <div class="pipeline-head">
+            <h3>Proof kit</h3>
+            <span>Testimonial ask, case-study snippet, and referral note</span>
+          </div>
+          <textarea id="proofKit" class="proposal-text" readonly></textarea>
+        </div>
       </section>
 
       <section class="section section-band" id="setup">

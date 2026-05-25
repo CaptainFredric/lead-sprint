@@ -14,6 +14,7 @@ The repo contains:
 - A launch QA and handoff report builder for client delivery
 - A care plan converter for monthly recurring revenue projections and close scripts
 - A monthly care report generator for retainer renewal notes
+- A proof and referral kit generator for testimonials, mini case studies, and warm asks
 - A polished CSS system in `styles.css`
 - A practical business plan and sales workflow in `docs/`
 
