@@ -45,6 +45,23 @@ Week 4:
 - Name the next improvement
 - Ask for one review, photo, offer update, or service detail if needed
 
+## Monthly Report
+
+Use the monthly client report builder on the live page before each renewal touch. The report should include:
+
+- Client name
+- Report month
+- Form leads reviewed
+- Call clicks reviewed
+- Care status
+- Small improvement shipped
+- Main observation
+- Next improvement
+- Retention health score
+- Renewal note
+
+The report is not meant to be a giant analytics deck. It is a compact proof-of-work note that makes the care plan feel active and worth continuing.
+
 ## Close Script
 
 Use after the QA report:

@@ -187,6 +187,24 @@ const careLoad = document.querySelector("#careLoad");
 const copyCarePitch = document.querySelector("#copyCarePitch");
 const careNote = document.querySelector("#careNote");
 const carePitch = document.querySelector("#carePitch");
+const monthlyReportForm = document.querySelector("#monthlyReportForm");
+const monthlyInputs = {
+  client: document.querySelector("#monthlyClient"),
+  period: document.querySelector("#monthlyPeriod"),
+  forms: document.querySelector("#monthlyForms"),
+  calls: document.querySelector("#monthlyCalls"),
+  status: document.querySelector("#monthlyStatus"),
+  update: document.querySelector("#monthlyUpdate"),
+  observation: document.querySelector("#monthlyObservation"),
+  next: document.querySelector("#monthlyNext")
+};
+const monthlyScore = document.querySelector("#monthlyScore");
+const monthlyStatusLine = document.querySelector("#monthlyStatusLine");
+const monthlyProof = document.querySelector("#monthlyProof");
+const monthlyRenewalCue = document.querySelector("#monthlyRenewalCue");
+const copyMonthlyReport = document.querySelector("#copyMonthlyReport");
+const monthlyReport = document.querySelector("#monthlyReport");
+const monthlyNote = document.querySelector("#monthlyNote");
 const sellerForm = document.querySelector("#sellerForm");
 const sellerName = document.querySelector("#sellerName");
 const sellerEmail = document.querySelector("#sellerEmail");
@@ -375,6 +393,26 @@ function formatDateLabel(value) {
   return date.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric"
+  });
+}
+
+function currentMonthValue() {
+  return new Date().toISOString().slice(0, 7);
+}
+
+function formatMonthLabel(value) {
+  if (!value) {
+    return "This month";
+  }
+
+  const date = new Date(`${value}-01T12:00:00`);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return date.toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric"
   });
 }
 
@@ -1204,11 +1242,111 @@ function makeCarePitch(plan) {
   ].join("\n");
 }
 
+function monthlyClientName() {
+  return monthlyInputs.client.value.trim() || handoffInputs.client.value.trim() || latestAudit?.business || "Client";
+}
+
+function buildMonthlyReportData() {
+  const forms = Math.max(0, Number(monthlyInputs.forms.value) || 0);
+  const calls = Math.max(0, Number(monthlyInputs.calls.value) || 0);
+  const leadActions = forms + calls;
+  const update = monthlyInputs.update.value.trim();
+  const observation = monthlyInputs.observation.value.trim();
+  const next = monthlyInputs.next.value.trim();
+  const status = monthlyInputs.status.value;
+  const statusPenalty = status === "fix" ? 18 : status === "watch" ? 8 : 0;
+  const score = Math.max(
+    0,
+    Math.min(
+      100,
+      42 + Math.min(26, leadActions * 3) + (update ? 14 : 0) + (observation ? 10 : 0) + (next ? 8 : 0) - statusPenalty
+    )
+  );
+
+  let statusLine = "Send the report and ask to continue care.";
+  if (score < 55) {
+    statusLine = "Fix the open issue before asking for renewal.";
+  } else if (score < 75) {
+    statusLine = "Send the report with a clear next improvement.";
+  }
+
+  let renewalCue = "This is a good month to keep the plan active without discounting.";
+  if (status === "fix") {
+    renewalCue = "Lead with the fix, then renew once the path is stable.";
+  } else if (status === "watch") {
+    renewalCue = "Frame renewal around watching one visible bottleneck.";
+  }
+
+  return {
+    client: monthlyClientName(),
+    period: monthlyInputs.period.value || currentMonthValue(),
+    periodLabel: formatMonthLabel(monthlyInputs.period.value || currentMonthValue()),
+    forms,
+    calls,
+    leadActions,
+    status,
+    update,
+    observation,
+    next,
+    score,
+    statusLine,
+    renewalCue
+  };
+}
+
+function makeMonthlyReport(data) {
+  const seller = getSellerSettings();
+  const monthlyFee = formatter.format(Number(careInputs.careFee.value));
+  const updateLine = data.update || "No small edit was shipped yet; next month should include one visible improvement.";
+  const observationLine = data.observation || "The lead path was checked, and the next report should include a sharper observation.";
+  const nextLine = data.next || "Choose one small conversion improvement before the next monthly note.";
+  const sellerLines = [
+    seller.sellerName ? `Prepared by: ${seller.sellerName}` : "Prepared by: Lead Sprint",
+    seller.sellerEmail ? `Contact: ${seller.sellerEmail}` : ""
+  ].filter(Boolean);
+
+  return [
+    `Care Plan Monthly Note: ${data.client}`,
+    `Period: ${data.periodLabel}`,
+    ...sellerLines,
+    "",
+    "What I checked:",
+    `- Form leads reviewed: ${data.forms}`,
+    `- Call clicks reviewed: ${data.calls}`,
+    `- Care status: ${data.status === "fix" ? "needs a fix" : data.status === "watch" ? "watch closely" : "healthy"}`,
+    "",
+    "What changed:",
+    `- ${updateLine}`,
+    "",
+    "What I noticed:",
+    observationLine,
+    "",
+    "Next small win:",
+    `- ${nextLine}`,
+    "",
+    "Renewal note:",
+    `The ${monthlyFee}/month care plan keeps the lead path tested, watched, and improved so the sprint does not become a finished project that slowly goes stale.`,
+    "",
+    `Retention health: ${data.score}/100`
+  ].join("\n");
+}
+
+function renderMonthlyReport() {
+  const data = buildMonthlyReportData();
+  monthlyScore.textContent = data.score;
+  monthlyStatusLine.textContent = data.statusLine;
+  monthlyProof.textContent = `${numberFormatter.format(data.leadActions)} tracked lead actions reviewed, ${data.update ? "one improvement shipped" : "no improvement logged yet"}, ${data.next ? "next action ready" : "next action needed"}.`;
+  monthlyRenewalCue.textContent = data.renewalCue;
+  monthlyReport.value = makeMonthlyReport(data);
+  return data;
+}
+
 Object.values(careInputs).forEach((input) => {
   input.addEventListener("input", () => {
     setCareValueLabels();
     calculateCarePlan();
     renderHandoff();
+    renderMonthlyReport();
   });
 });
 
@@ -1252,13 +1390,38 @@ copyCarePitch.addEventListener("click", async () => {
   }
 });
 
+monthlyReportForm.addEventListener("input", () => {
+  renderMonthlyReport();
+  monthlyNote.textContent = "";
+});
+
+monthlyReportForm.addEventListener("change", () => {
+  renderMonthlyReport();
+  monthlyNote.textContent = "";
+});
+
+copyMonthlyReport.addEventListener("click", async () => {
+  renderMonthlyReport();
+
+  try {
+    await navigator.clipboard.writeText(monthlyReport.value);
+    monthlyNote.textContent = "Monthly report copied.";
+  } catch {
+    monthlyReport.focus();
+    monthlyReport.select();
+    monthlyNote.textContent = "Clipboard was unavailable. The monthly report is selected.";
+  }
+});
+
 handoffForm.addEventListener("input", () => {
   renderHandoff();
+  renderMonthlyReport();
   handoffNote.textContent = "";
 });
 
 handoffForm.addEventListener("change", () => {
   renderHandoff();
+  renderMonthlyReport();
   handoffNote.textContent = "";
 });
 
@@ -1309,6 +1472,7 @@ sellerForm.addEventListener("submit", (event) => {
   renderAudit(latestAudit);
   renderHandoff();
   calculateCarePlan();
+  renderMonthlyReport();
   sellerNote.textContent = "Seller setup saved locally in this browser.";
 });
 
@@ -1319,6 +1483,7 @@ resetSeller.addEventListener("click", () => {
   renderAudit(latestAudit);
   renderHandoff();
   calculateCarePlan();
+  renderMonthlyReport();
   sellerNote.textContent = "Seller setup reset.";
 });
 
@@ -1378,6 +1543,7 @@ printProposal.addEventListener("click", () => {
 renderSellerSettings();
 renderCampaign();
 loadHandoffState();
+monthlyInputs.period.value = currentMonthValue();
 setPlannerValueLabels();
 calculatePlanner();
 setCareValueLabels();
@@ -1386,3 +1552,4 @@ latestAudit = buildAudit();
 renderAudit(latestAudit);
 renderProspects();
 renderHandoff();
+renderMonthlyReport();

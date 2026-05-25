@@ -13,6 +13,7 @@ The repo contains:
 - A niche campaign builder for vertical-specific angles
 - A launch QA and handoff report builder for client delivery
 - A care plan converter for monthly recurring revenue projections and close scripts
+- A monthly care report generator for retainer renewal notes
 - A polished CSS system in `styles.css`
 - A practical business plan and sales workflow in `docs/`
 

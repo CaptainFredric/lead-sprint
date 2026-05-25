@@ -367,7 +367,10 @@ h3 {
 .care-form,
 .care-output,
 .care-rhythm article,
-.care-script-panel {
+.care-script-panel,
+.monthly-form,
+.monthly-output,
+.monthly-report-panel {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
@@ -1090,6 +1093,84 @@ h3 {
   overflow: hidden;
 }
 
+.monthly-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+  gap: 18px;
+  align-items: start;
+  margin-top: 18px;
+}
+
+.monthly-form {
+  display: grid;
+  gap: 18px;
+  padding: 0 24px 24px;
+  overflow: hidden;
+}
+
+.monthly-form .compact-head {
+  margin: 0 -24px;
+}
+
+.monthly-form label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.monthly-form input,
+.monthly-form select,
+.monthly-form textarea {
+  min-height: 46px;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--ink);
+  background: #ffffff;
+  font: inherit;
+}
+
+.monthly-form textarea {
+  min-height: 92px;
+  resize: vertical;
+  line-height: 1.45;
+}
+
+.monthly-output {
+  display: grid;
+  gap: 16px;
+  padding: 24px;
+  background:
+    linear-gradient(135deg, rgba(28, 109, 208, 0.1), rgba(217, 155, 34, 0.12)),
+    var(--surface);
+}
+
+.monthly-output > div {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.monthly-output strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
+.monthly-output p {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.monthly-report-panel {
+  margin-top: 18px;
+  overflow: hidden;
+}
+
 .cadence-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1293,7 +1374,8 @@ h3 {
   .planner-layout,
   .campaign-layout,
   .handoff-layout,
-  .care-layout {
+  .care-layout,
+  .monthly-layout {
     grid-template-columns: 1fr;
   }
 
@@ -1403,8 +1485,17 @@ h3 {
   .handoff-form,
   .handoff-output,
   .care-form,
-  .care-output {
+  .care-output,
+  .monthly-output {
     padding: 18px;
+  }
+
+  .monthly-form {
+    padding: 0 18px 18px;
+  }
+
+  .monthly-form .compact-head {
+    margin: 0 -18px;
   }
 
   .console-actions,
@@ -1415,7 +1506,8 @@ h3 {
   .close-actions .button,
   .planner-output .button,
   .handoff-output .button,
-  .care-output .button {
+  .care-output .button,
+  .monthly-output .button {
     width: 100%;
   }
 

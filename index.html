@@ -762,6 +762,79 @@
           </div>
           <textarea id="carePitch" class="proposal-text" readonly></textarea>
         </div>
+
+        <div class="monthly-layout">
+          <form class="monthly-form" id="monthlyReportForm">
+            <div class="pipeline-head compact-head">
+              <h3>Monthly client report</h3>
+              <span>Use this to prove the care plan is active</span>
+            </div>
+            <div class="field-grid">
+              <label>
+                <span>Client</span>
+                <input id="monthlyClient" name="monthlyClient" type="text" placeholder="Brightside HVAC">
+              </label>
+              <label>
+                <span>Report month</span>
+                <input id="monthlyPeriod" name="monthlyPeriod" type="month">
+              </label>
+              <label>
+                <span>Form leads checked</span>
+                <input id="monthlyForms" name="monthlyForms" type="number" min="0" step="1" value="3">
+              </label>
+              <label>
+                <span>Call clicks reviewed</span>
+                <input id="monthlyCalls" name="monthlyCalls" type="number" min="0" step="1" value="5">
+              </label>
+              <label>
+                <span>Care status</span>
+                <select id="monthlyStatus" name="monthlyStatus">
+                  <option value="healthy">Healthy</option>
+                  <option value="watch">Watch closely</option>
+                  <option value="fix">Needs a fix</option>
+                </select>
+              </label>
+              <label>
+                <span>Small improvement shipped</span>
+                <input id="monthlyUpdate" name="monthlyUpdate" type="text" placeholder="Added review proof near the quote button">
+              </label>
+            </div>
+            <label>
+              <span>Main observation</span>
+              <textarea id="monthlyObservation" name="monthlyObservation" rows="3" placeholder="The quote path is working, but the service-area copy could be clearer."></textarea>
+            </label>
+            <label>
+              <span>Next improvement</span>
+              <input id="monthlyNext" name="monthlyNext" type="text" placeholder="Test a stronger emergency-service CTA">
+            </label>
+            <p class="form-note" id="monthlyNote" role="status"></p>
+          </form>
+
+          <aside class="monthly-output" aria-live="polite">
+            <div>
+              <span class="result-label">Retention health</span>
+              <strong id="monthlyScore">82</strong>
+              <p id="monthlyStatusLine">Send the report and ask to continue care.</p>
+            </div>
+            <div>
+              <span class="result-label">Client-facing proof</span>
+              <p id="monthlyProof">8 tracked lead actions reviewed, one improvement shipped, next action ready.</p>
+            </div>
+            <div>
+              <span class="result-label">Renewal cue</span>
+              <p id="monthlyRenewalCue">This is a good month to keep the plan active without discounting.</p>
+            </div>
+            <button class="button button-primary" id="copyMonthlyReport" type="button">Copy monthly report</button>
+          </aside>
+        </div>
+
+        <div class="monthly-report-panel">
+          <div class="pipeline-head">
+            <h3>Care plan monthly note</h3>
+            <span>Generated from the client report</span>
+          </div>
+          <textarea id="monthlyReport" class="proposal-text" readonly></textarea>
+        </div>
       </section>
 
       <section class="section section-band" id="setup">
