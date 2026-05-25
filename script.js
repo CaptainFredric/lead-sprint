@@ -11,6 +11,7 @@ const numberFormatter = new Intl.NumberFormat("en-US", {
 const prospectStorageKey = "leadSprintProspects";
 const sellerStorageKey = "leadSprintSeller";
 const handoffStorageKey = "leadSprintHandoff";
+const opsStorageKey = "leadSprintOps";
 
 const calculatorInputs = {
   visits: document.querySelector("#visits"),
@@ -172,6 +173,28 @@ const weeklyEmails = document.querySelector("#weeklyEmails");
 const dailyProspects = document.querySelector("#dailyProspects");
 const copyDailyPlan = document.querySelector("#copyDailyPlan");
 const plannerNote = document.querySelector("#plannerNote");
+const opsForm = document.querySelector("#opsForm");
+const opsInputs = {
+  target: document.querySelector("#opsTarget"),
+  outreach: document.querySelector("#opsOutreach"),
+  replies: document.querySelector("#opsReplies"),
+  calls: document.querySelector("#opsCalls"),
+  pilots: document.querySelector("#opsPilots"),
+  care: document.querySelector("#opsCare"),
+  cash: document.querySelector("#opsCash"),
+  blocker: document.querySelector("#opsBlocker")
+};
+const opsScore = document.querySelector("#opsScore");
+const opsProgressBar = document.querySelector("#opsProgressBar");
+const opsStatus = document.querySelector("#opsStatus");
+const opsBooked = document.querySelector("#opsBooked");
+const opsGap = document.querySelector("#opsGap");
+const opsNext = document.querySelector("#opsNext");
+const saveOps = document.querySelector("#saveOps");
+const resetOps = document.querySelector("#resetOps");
+const copyWeeklyReview = document.querySelector("#copyWeeklyReview");
+const opsReview = document.querySelector("#opsReview");
+const opsNote = document.querySelector("#opsNote");
 const careInputs = {
   careSprintClients: document.querySelector("#careSprintClients"),
   careConversionRate: document.querySelector("#careConversionRate"),
@@ -450,6 +473,146 @@ function renderSellerSettings() {
   sellerPreview.textContent = seller.sellerName || "Lead Sprint operator";
   sellerPreviewDetail.textContent = sellerContactLine();
   footerIdentity.textContent = `${seller.sellerName || "Lead Sprint"}${seller.serviceArea ? ` | ${seller.serviceArea}` : ""}${seller.sellerEmail ? ` | ${seller.sellerEmail}` : ""}`;
+}
+
+function getOpsState() {
+  try {
+    return JSON.parse(localStorage.getItem(opsStorageKey));
+  } catch {
+    return null;
+  }
+}
+
+function setOpsState(state) {
+  localStorage.setItem(opsStorageKey, JSON.stringify(state));
+}
+
+function loadOpsState() {
+  const state = getOpsState();
+  if (!state) {
+    return;
+  }
+
+  Object.entries(opsInputs).forEach(([key, input]) => {
+    if (state[key] !== undefined) {
+      input.value = state[key];
+    }
+  });
+}
+
+function opsNumber(input) {
+  return Math.max(0, Number(input.value) || 0);
+}
+
+function buildOpsData() {
+  const target = Math.max(250, opsNumber(opsInputs.target));
+  const outreach = opsNumber(opsInputs.outreach);
+  const replies = opsNumber(opsInputs.replies);
+  const calls = opsNumber(opsInputs.calls);
+  const pilots = opsNumber(opsInputs.pilots);
+  const care = opsNumber(opsInputs.care);
+  const cash = opsNumber(opsInputs.cash);
+  const careFee = Number(careInputs.careFee.value) || 250;
+  const bookedRevenue = pilots * 750 + care * careFee;
+  const cashGap = Math.max(0, target - cash);
+  const activityScore = Math.min(25, Math.round((outreach / 50) * 25));
+  const replyScore = Math.min(18, Math.round((replies / 5) * 18));
+  const callScore = Math.min(18, Math.round((calls / 2) * 18));
+  const saleScore = Math.min(24, Math.round(((pilots + care) / 2) * 24));
+  const cashScore = Math.min(15, Math.round((cash / target) * 15));
+  const score = Math.min(100, activityScore + replyScore + callScore + saleScore + cashScore);
+
+  let status = "Start with prospecting volume.";
+  if (score >= 85) {
+    status = "Strong week. Protect delivery and ask for care.";
+  } else if (score >= 65) {
+    status = "Good momentum. Push the next close.";
+  } else if (score >= 40) {
+    status = "Some signal. Tighten the bottleneck.";
+  }
+
+  let nextAction = "Send 50 focused teardown notes before polishing anything else.";
+  if (outreach >= 50 && replies < 5) {
+    nextAction = "Improve the first-line observation and send follow-ups to this week's prospects.";
+  } else if (replies >= 5 && calls < 2) {
+    nextAction = "Ask every warm reply for a 15-minute teardown review.";
+  } else if (calls >= 2 && pilots === 0) {
+    nextAction = "Send the mini-proposal and ask for the pilot deposit.";
+  } else if (pilots > 0 && care === 0) {
+    nextAction = "Use the handoff report to pitch the monthly care plan.";
+  } else if (cashGap > 0) {
+    nextAction = `Collect ${formatter.format(cashGap)} more before calling the week done.`;
+  } else {
+    nextAction = "Write the weekly review, save proof, and set next week's outreach block.";
+  }
+
+  if (opsInputs.blocker.value === "prospecting") {
+    nextAction = "Build a tighter list from one niche campaign before sending more generic outreach.";
+  } else if (opsInputs.blocker.value === "reply") {
+    nextAction = "Rewrite the opener around one visible lead leak and send 10 test emails.";
+  } else if (opsInputs.blocker.value === "close") {
+    nextAction = "Use the ROI calculator and proposal panel before the next teardown call.";
+  } else if (opsInputs.blocker.value === "delivery") {
+    nextAction = "Stop selling for a block, finish QA, and protect the handoff promise.";
+  }
+
+  return {
+    target,
+    outreach,
+    replies,
+    calls,
+    pilots,
+    care,
+    cash,
+    careFee,
+    bookedRevenue,
+    cashGap,
+    score,
+    status,
+    nextAction,
+    blocker: opsInputs.blocker.value
+  };
+}
+
+function makeWeeklyReview(data) {
+  const seller = getSellerSettings();
+
+  return [
+    "Lead Sprint Weekly Review",
+    seller.sellerName ? `Operator: ${seller.sellerName}` : "Operator: Lead Sprint",
+    "",
+    "Scoreboard:",
+    `- Outreach sent: ${data.outreach}`,
+    `- Replies received: ${data.replies}`,
+    `- Reviews booked: ${data.calls}`,
+    `- Pilots sold: ${data.pilots}`,
+    `- Care plans sold: ${data.care}`,
+    `- Projected booked revenue: ${formatter.format(data.bookedRevenue)}`,
+    `- Cash collected: ${formatter.format(data.cash)}`,
+    `- Cash gap: ${formatter.format(data.cashGap)}`,
+    `- Execution score: ${data.score}/100`,
+    "",
+    "Readout:",
+    data.status,
+    "",
+    "Next money action:",
+    data.nextAction,
+    "",
+    "Rule for next week:",
+    "Do not invent a new offer until the current bottleneck has been worked for one focused block."
+  ].join("\n");
+}
+
+function renderOps() {
+  const data = buildOpsData();
+  opsScore.textContent = data.score;
+  opsProgressBar.style.width = `${data.score}%`;
+  opsStatus.textContent = data.status;
+  opsBooked.textContent = formatter.format(data.bookedRevenue);
+  opsGap.textContent = formatter.format(data.cashGap);
+  opsNext.textContent = data.nextAction;
+  opsReview.value = makeWeeklyReview(data);
+  return data;
 }
 
 function getHandoffState() {
@@ -1168,6 +1331,17 @@ Object.values(plannerInputs).forEach((input) => {
   });
 });
 
+Object.values(opsInputs).forEach((input) => {
+  input.addEventListener("input", () => {
+    renderOps();
+    opsNote.textContent = "";
+  });
+  input.addEventListener("change", () => {
+    renderOps();
+    opsNote.textContent = "";
+  });
+});
+
 function formatHours(value) {
   return Number.isInteger(value) ? `${value} hrs` : `${value.toFixed(1)} hrs`;
 }
@@ -1478,6 +1652,7 @@ Object.values(careInputs).forEach((input) => {
   input.addEventListener("input", () => {
     setCareValueLabels();
     calculateCarePlan();
+    renderOps();
     renderHandoff();
     renderMonthlyReport();
     renderProofLoop();
@@ -1508,6 +1683,42 @@ copyDailyPlan.addEventListener("click", async () => {
     plannerNote.textContent = "Daily outreach plan copied.";
   } catch {
     plannerNote.textContent = "Clipboard was unavailable. Use the visible planner numbers.";
+  }
+});
+
+saveOps.addEventListener("click", () => {
+  const data = renderOps();
+  setOpsState({
+    target: data.target,
+    outreach: data.outreach,
+    replies: data.replies,
+    calls: data.calls,
+    pilots: data.pilots,
+    care: data.care,
+    cash: data.cash,
+    blocker: data.blocker,
+    updatedAt: new Date().toISOString()
+  });
+  opsNote.textContent = "Weekly dashboard saved locally in this browser.";
+});
+
+resetOps.addEventListener("click", () => {
+  localStorage.removeItem(opsStorageKey);
+  opsForm.reset();
+  renderOps();
+  opsNote.textContent = "Weekly dashboard reset.";
+});
+
+copyWeeklyReview.addEventListener("click", async () => {
+  renderOps();
+
+  try {
+    await navigator.clipboard.writeText(opsReview.value);
+    opsNote.textContent = "Weekly review copied.";
+  } catch {
+    opsReview.focus();
+    opsReview.select();
+    opsNote.textContent = "Clipboard was unavailable. The weekly review is selected.";
   }
 });
 
@@ -1633,6 +1844,7 @@ sellerForm.addEventListener("submit", (event) => {
   renderAudit(latestAudit);
   renderHandoff();
   calculateCarePlan();
+  renderOps();
   renderMonthlyReport();
   renderProofLoop();
   sellerNote.textContent = "Seller setup saved locally in this browser.";
@@ -1645,6 +1857,7 @@ resetSeller.addEventListener("click", () => {
   renderAudit(latestAudit);
   renderHandoff();
   calculateCarePlan();
+  renderOps();
   renderMonthlyReport();
   renderProofLoop();
   sellerNote.textContent = "Seller setup reset.";
@@ -1706,11 +1919,13 @@ printProposal.addEventListener("click", () => {
 renderSellerSettings();
 renderCampaign();
 loadHandoffState();
+loadOpsState();
 monthlyInputs.period.value = currentMonthValue();
 setPlannerValueLabels();
 calculatePlanner();
 setCareValueLabels();
 calculateCarePlan();
+renderOps();
 latestAudit = buildAudit();
 renderAudit(latestAudit);
 renderProspects();

@@ -349,6 +349,9 @@ h3 {
 .intake-form,
 .proof-copy,
 .scoreboard,
+.ops-form,
+.ops-output,
+.ops-review-panel,
 .audit-form,
 .audit-output,
 .pipeline-panel,
@@ -384,6 +387,75 @@ h3 {
   display: grid;
   gap: 18px;
   padding: 24px;
+}
+
+.ops-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.88fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.ops-form {
+  display: grid;
+  gap: 18px;
+  padding: 24px;
+}
+
+.ops-form label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.ops-form input,
+.ops-form select {
+  min-height: 46px;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--ink);
+  background: #ffffff;
+  font: inherit;
+}
+
+.ops-output {
+  display: grid;
+  gap: 16px;
+  padding: 24px;
+  background:
+    linear-gradient(135deg, rgba(31, 157, 99, 0.12), rgba(28, 109, 208, 0.08)),
+    var(--surface);
+}
+
+.ops-output > div {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.ops-output strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 2rem;
+  line-height: 1.05;
+}
+
+.ops-output p {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.ops-score strong {
+  font-size: 2.7rem;
+}
+
+.ops-review-panel {
+  margin-top: 18px;
+  overflow: hidden;
 }
 
 .range-row {
@@ -1448,6 +1520,7 @@ h3 {
   }
 
   .calculator-shell,
+  .ops-layout,
   .proof-layout,
   .console-layout,
   .diy-grid,
@@ -1554,6 +1627,8 @@ h3 {
 
   .calculator,
   .roi-panel,
+  .ops-form,
+  .ops-output,
   .intake-form,
   .proof-copy,
   .audit-form,
@@ -1590,6 +1665,7 @@ h3 {
   .settings-actions .button,
   .close-actions .button,
   .planner-output .button,
+  .ops-output .button,
   .handoff-output .button,
   .care-output .button,
   .monthly-output .button,

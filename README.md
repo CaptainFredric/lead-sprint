@@ -6,6 +6,7 @@ The repo contains:
 
 - A static landing page at `index.html`
 - A live ROI calculator and outreach email drafter in `script.js`
+- A weekly operator dashboard for outreach, calls, sales, care plans, and cash collected
 - A prospect audit console with local pipeline storage and CSV export
 - A mini-proposal generator for sales calls
 - A local seller setup panel for booking, deposit, contact, and footer identity

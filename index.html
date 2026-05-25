@@ -9,7 +9,7 @@
     <meta property="og:type" content="website">
     <meta property="og:image" content="assets/hero-local-business.jpg">
     <title>72-Hour Lead Sprint</title>
-    <link rel="stylesheet" href="styles.css?v=20260525-proof">
+    <link rel="stylesheet" href="styles.css?v=20260525-ops">
   </head>
   <body>
     <header class="site-header">
@@ -18,6 +18,7 @@
         <span>Lead Sprint</span>
       </a>
       <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#ops">Ops</a>
         <a href="#offer">Offer</a>
         <a href="#niches">Niches</a>
         <a href="#diy">DIY?</a>
@@ -75,6 +76,99 @@
         <div class="signal-item">
           <strong>Measurement</strong>
           <span>analytics events, conversion notes, next-step report</span>
+        </div>
+      </section>
+
+      <section class="section section-tight" id="ops">
+        <div class="section-heading">
+          <p class="eyebrow">Operator dashboard</p>
+          <h2>Know whether the week is actually moving toward money.</h2>
+          <p>
+            Track the few numbers that make the sprint business real: outreach, replies, booked
+            reviews, pilots sold, care plans sold, and cash collected.
+          </p>
+        </div>
+
+        <div class="ops-layout">
+          <form class="ops-form" id="opsForm">
+            <div class="field-grid">
+              <label>
+                <span>Weekly revenue target</span>
+                <input id="opsTarget" name="opsTarget" type="number" min="250" step="250" value="1500">
+              </label>
+              <label>
+                <span>Outreach sent</span>
+                <input id="opsOutreach" name="opsOutreach" type="number" min="0" step="1" value="0">
+              </label>
+              <label>
+                <span>Replies received</span>
+                <input id="opsReplies" name="opsReplies" type="number" min="0" step="1" value="0">
+              </label>
+              <label>
+                <span>Reviews booked</span>
+                <input id="opsCalls" name="opsCalls" type="number" min="0" step="1" value="0">
+              </label>
+              <label>
+                <span>Pilots sold</span>
+                <input id="opsPilots" name="opsPilots" type="number" min="0" step="1" value="0">
+              </label>
+              <label>
+                <span>Care plans sold</span>
+                <input id="opsCare" name="opsCare" type="number" min="0" step="1" value="0">
+              </label>
+              <label>
+                <span>Cash collected</span>
+                <input id="opsCash" name="opsCash" type="number" min="0" step="50" value="0">
+              </label>
+              <label>
+                <span>Current blocker</span>
+                <select id="opsBlocker" name="opsBlocker">
+                  <option value="none">No clear blocker</option>
+                  <option value="prospecting">Need better prospect list</option>
+                  <option value="reply">Replies are weak</option>
+                  <option value="close">Calls are not closing</option>
+                  <option value="delivery">Delivery is backing up</option>
+                </select>
+              </label>
+            </div>
+            <div class="console-actions">
+              <button class="button button-primary" id="saveOps" type="button">Save week</button>
+              <button class="button button-light" id="resetOps" type="button">Reset week</button>
+            </div>
+            <p class="form-note" id="opsNote" role="status"></p>
+          </form>
+
+          <aside class="ops-output" aria-live="polite">
+            <div class="ops-score">
+              <span class="result-label">Weekly execution score</span>
+              <strong id="opsScore">0</strong>
+              <div class="progress-track" aria-hidden="true">
+                <span id="opsProgressBar"></span>
+              </div>
+              <p id="opsStatus">Start with prospecting volume.</p>
+            </div>
+            <div>
+              <span class="result-label">Projected booked revenue</span>
+              <strong id="opsBooked">$0</strong>
+            </div>
+            <div>
+              <span class="result-label">Cash gap</span>
+              <strong id="opsGap">$1,500</strong>
+            </div>
+            <div>
+              <span class="result-label">Next money action</span>
+              <p id="opsNext">Send 50 focused teardown notes before polishing anything else.</p>
+            </div>
+            <button class="button button-primary" id="copyWeeklyReview" type="button">Copy weekly review</button>
+          </aside>
+        </div>
+
+        <div class="ops-review-panel">
+          <div class="pipeline-head">
+            <h3>Weekly review</h3>
+            <span>Generated from the operator dashboard</span>
+          </div>
+          <textarea id="opsReview" class="proposal-text" readonly></textarea>
         </div>
       </section>
 
@@ -1054,6 +1148,6 @@
       <a href="#top">Back to top</a>
     </footer>
 
-    <script src="script.js?v=20260525-proof"></script>
+    <script src="script.js?v=20260525-ops"></script>
   </body>
 </html>
