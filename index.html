@@ -9,7 +9,7 @@
     <meta property="og:type" content="website">
     <meta property="og:image" content="assets/hero-local-business.jpg">
     <title>72-Hour Lead Sprint</title>
-    <link rel="stylesheet" href="styles.css?v=20260525-ops">
+    <link rel="stylesheet" href="styles.css?v=20260527-deal">
   </head>
   <body>
     <header class="site-header">
@@ -480,6 +480,109 @@
             </div>
           </div>
           <textarea id="proposalText" class="proposal-text" readonly></textarea>
+        </div>
+
+        <div class="deal-desk-panel">
+          <div class="pipeline-head">
+            <h3>Deal desk</h3>
+            <span>Qualify scope, payment, and delivery risk before accepting a sprint</span>
+          </div>
+          <div class="deal-layout">
+            <form class="deal-form" id="dealForm">
+              <div class="field-grid">
+                <label>
+                  <span>Budget signal</span>
+                  <select id="dealBudget" name="dealBudget">
+                    <option value="approved">Pilot budget approved</option>
+                    <option value="growth">Growth Sprint budget possible</option>
+                    <option value="unknown">Budget not discussed</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Decision-maker</span>
+                  <select id="dealAuthority" name="dealAuthority">
+                    <option value="owner">Owner or final approver</option>
+                    <option value="influencer">Influencer, not final approver</option>
+                    <option value="unknown">Unknown authority</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Access timing</span>
+                  <select id="dealAccess" name="dealAccess">
+                    <option value="ready">Access ready now</option>
+                    <option value="week">Access this week</option>
+                    <option value="later">Access unclear</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Delivery timing</span>
+                  <select id="dealTimeline" name="dealTimeline">
+                    <option value="normal">72 hours after access</option>
+                    <option value="rush">Rush request</option>
+                    <option value="unclear">Timeline unclear</option>
+                  </select>
+                </label>
+              </div>
+
+              <fieldset class="deal-checks">
+                <legend>Scope guardrails</legend>
+                <label>
+                  <input type="checkbox" name="dealCheck" value="One primary service is selected" data-weight="12" checked>
+                  <span>One primary service is selected</span>
+                </label>
+                <label>
+                  <input type="checkbox" name="dealCheck" value="Deposit can be collected before build starts" data-weight="16" checked>
+                  <span>Deposit can be collected before build starts</span>
+                </label>
+                <label>
+                  <input type="checkbox" name="dealCheck" value="Client accepts one focused page, not a full redesign" data-weight="14" checked>
+                  <span>Client accepts one focused page, not a full redesign</span>
+                </label>
+                <label>
+                  <input type="checkbox" name="dealCheck" value="No custom CRM, booking system, or complex integration" data-weight="12" checked>
+                  <span>No custom CRM, booking system, or complex integration</span>
+                </label>
+                <label>
+                  <input type="checkbox" name="dealCheck" value="Reviews, proof, or brand assets are available" data-weight="10">
+                  <span>Reviews, proof, or brand assets are available</span>
+                </label>
+                <label>
+                  <input type="checkbox" name="dealCheck" value="Client can answer revision questions within 24 hours" data-weight="10">
+                  <span>Client can answer revision questions within 24 hours</span>
+                </label>
+              </fieldset>
+
+              <label>
+                <span>Risk note</span>
+                <textarea id="dealRisk" name="dealRisk" rows="3" placeholder="Any unusual request, missing access, or scope concern"></textarea>
+              </label>
+              <div class="console-actions">
+                <button class="button button-primary" id="copyDealBrief" type="button">Copy deal brief</button>
+              </div>
+              <p class="form-note" id="dealNote" role="status"></p>
+            </form>
+
+            <aside class="deal-output" aria-live="polite">
+              <div class="deal-score">
+                <span class="result-label">Deal fit score</span>
+                <strong id="dealScore">86</strong>
+                <p id="dealRecommendation">Accept with deposit and tight scope.</p>
+              </div>
+              <div>
+                <span class="result-label">Recommended package</span>
+                <strong id="dealPackage">Pilot Sprint</strong>
+              </div>
+              <div>
+                <span class="result-label">Terms to protect</span>
+                <p id="dealTerms">Collect deposit before build, keep the scope to one service page, and start after access is ready.</p>
+              </div>
+              <div>
+                <span class="result-label">Next close move</span>
+                <p id="dealNext">Send the scope guard and deposit link before doing custom work.</p>
+              </div>
+            </aside>
+          </div>
+          <textarea id="dealBrief" class="proposal-text" readonly></textarea>
         </div>
 
         <div class="pipeline-panel">
@@ -1148,6 +1251,6 @@
       <a href="#top">Back to top</a>
     </footer>
 
-    <script src="script.js?v=20260525-ops"></script>
+    <script src="script.js?v=20260527-deal"></script>
   </body>
 </html>

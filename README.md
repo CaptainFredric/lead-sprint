@@ -9,6 +9,7 @@ The repo contains:
 - A weekly operator dashboard for outreach, calls, sales, care plans, and cash collected
 - A prospect audit console with local pipeline storage and CSV export
 - A mini-proposal generator for sales calls
+- A deal desk for scope guardrails, deposit readiness, and fit scoring
 - A local seller setup panel for booking, deposit, contact, and footer identity
 - An outreach planner and pipeline follow-up workflow
 - A niche campaign builder for vertical-specific angles

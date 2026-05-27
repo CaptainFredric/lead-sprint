@@ -354,6 +354,9 @@ h3 {
 .ops-review-panel,
 .audit-form,
 .audit-output,
+.deal-desk-panel,
+.deal-form,
+.deal-output,
 .pipeline-panel,
 .proposal-panel,
 .diy-card,
@@ -761,6 +764,112 @@ h3 {
 .proposal-panel {
   margin-top: 18px;
   overflow: hidden;
+}
+
+.deal-desk-panel {
+  margin-top: 18px;
+  overflow: hidden;
+}
+
+.deal-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.88fr);
+  gap: 18px;
+  padding: 18px;
+  align-items: start;
+}
+
+.deal-form {
+  display: grid;
+  gap: 18px;
+  padding: 24px;
+  box-shadow: none;
+}
+
+.deal-form label,
+.deal-checks label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.deal-form input,
+.deal-form select,
+.deal-form textarea {
+  min-height: 46px;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--ink);
+  background: #ffffff;
+  font: inherit;
+}
+
+.deal-form textarea {
+  min-height: 92px;
+  resize: vertical;
+  line-height: 1.45;
+}
+
+.deal-checks {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.deal-checks legend {
+  padding: 0 8px;
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.deal-checks label {
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: start;
+}
+
+.deal-checks input {
+  min-height: auto;
+  margin-top: 5px;
+  accent-color: var(--green);
+}
+
+.deal-output {
+  display: grid;
+  gap: 16px;
+  padding: 24px;
+  background:
+    linear-gradient(135deg, rgba(31, 157, 99, 0.1), rgba(217, 155, 34, 0.12)),
+    var(--surface);
+  box-shadow: none;
+}
+
+.deal-output > div {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.deal-output strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 1.75rem;
+  line-height: 1.05;
+}
+
+.deal-output p {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.deal-score strong {
+  font-size: 2.5rem;
 }
 
 .pipeline-head {
@@ -1523,6 +1632,7 @@ h3 {
   .ops-layout,
   .proof-layout,
   .console-layout,
+  .deal-layout,
   .diy-grid,
   .setup-layout,
   .planner-layout,
@@ -1633,6 +1743,8 @@ h3 {
   .proof-copy,
   .audit-form,
   .audit-output,
+  .deal-form,
+  .deal-output,
   .settings-form,
   .close-panel,
   .planner-form,
@@ -1666,6 +1778,7 @@ h3 {
   .close-actions .button,
   .planner-output .button,
   .ops-output .button,
+  .deal-output .button,
   .handoff-output .button,
   .care-output .button,
   .monthly-output .button,

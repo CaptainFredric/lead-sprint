@@ -159,6 +159,23 @@ const prospectRows = document.querySelector("#prospectRows");
 const proposalText = document.querySelector("#proposalText");
 const proposalMeta = document.querySelector("#proposalMeta");
 const printProposal = document.querySelector("#printProposal");
+const dealForm = document.querySelector("#dealForm");
+const dealInputs = {
+  budget: document.querySelector("#dealBudget"),
+  authority: document.querySelector("#dealAuthority"),
+  access: document.querySelector("#dealAccess"),
+  timeline: document.querySelector("#dealTimeline"),
+  risk: document.querySelector("#dealRisk")
+};
+const dealChecks = [...document.querySelectorAll("input[name='dealCheck']")];
+const dealScore = document.querySelector("#dealScore");
+const dealRecommendation = document.querySelector("#dealRecommendation");
+const dealPackage = document.querySelector("#dealPackage");
+const dealTerms = document.querySelector("#dealTerms");
+const dealNext = document.querySelector("#dealNext");
+const copyDealBrief = document.querySelector("#copyDealBrief");
+const dealBrief = document.querySelector("#dealBrief");
+const dealNote = document.querySelector("#dealNote");
 const plannerInputs = {
   revenueTarget: document.querySelector("#revenueTarget"),
   averageDeal: document.querySelector("#averageDeal"),
@@ -893,6 +910,7 @@ function renderAudit(audit) {
   auditNext.textContent = audit.nextAction;
   proposalText.value = makeProposal(audit);
   proposalMeta.textContent = `${pack.name}, ${formatter.format(pack.price)}, ${pack.timeline}`;
+  renderDealDesk();
   renderHandoff();
   renderMonthlyReport();
   renderProofLoop();
@@ -995,6 +1013,152 @@ function makeProposal(audit) {
     "",
     seller.sellerName ? `Prepared by ${seller.sellerName}` : "Prepared by Lead Sprint"
   ].join("\n");
+}
+
+function selectedDealChecks() {
+  return dealChecks.filter((check) => check.checked).map((check) => ({
+    label: check.value,
+    weight: Number(check.dataset.weight)
+  }));
+}
+
+function dealSelectScore(type, value) {
+  const scores = {
+    budget: {
+      approved: 16,
+      growth: 20,
+      unknown: 4
+    },
+    authority: {
+      owner: 16,
+      influencer: 8,
+      unknown: 0
+    },
+    access: {
+      ready: 14,
+      week: 9,
+      later: 0
+    },
+    timeline: {
+      normal: 10,
+      rush: 3,
+      unclear: 0
+    }
+  };
+
+  return scores[type]?.[value] || 0;
+}
+
+function buildDealData() {
+  const audit = latestAudit || buildAudit();
+  const checked = selectedDealChecks();
+  const missing = dealChecks.filter((check) => !check.checked).map((check) => check.value);
+  const riskNote = dealInputs.risk.value.trim();
+  const baseScore =
+    dealSelectScore("budget", dealInputs.budget.value) +
+    dealSelectScore("authority", dealInputs.authority.value) +
+    dealSelectScore("access", dealInputs.access.value) +
+    dealSelectScore("timeline", dealInputs.timeline.value) +
+    checked.reduce((total, check) => total + check.weight, 0);
+  const riskPenalty = riskNote ? 8 : 0;
+  const score = Math.max(0, Math.min(100, baseScore - riskPenalty));
+
+  let recommendation = "Do not start the sprint yet.";
+  if (score >= 85) {
+    recommendation = "Accept with deposit and tight scope.";
+  } else if (score >= 70) {
+    recommendation = "Good candidate. Confirm missing items before deposit.";
+  } else if (score >= 50) {
+    recommendation = "Conditional deal. Use the scope guard before the call.";
+  }
+
+  const pack = dealInputs.budget.value === "growth"
+    ? { name: "Growth Sprint", price: 1500, timeline: "5 working days" }
+    : recommendedPackage(audit);
+
+  let terms = "Collect deposit before build, keep the scope to one service page, and start after access is ready.";
+  if (dealInputs.access.value !== "ready") {
+    terms = "Do not start the delivery clock until access and assets are in hand.";
+  } else if (dealInputs.timeline.value === "rush") {
+    terms = "Protect the 72-hour promise by narrowing scope before agreeing to a rush.";
+  } else if (dealInputs.budget.value === "unknown") {
+    terms = "Discuss price and deposit before doing any custom proposal work.";
+  }
+
+  let next = "Send the scope guard and deposit link before doing custom work.";
+  if (score < 50) {
+    next = "Pause the sprint. Confirm authority, budget, access, and scope first.";
+  } else if (missing.length > 0) {
+    next = `Confirm this before deposit: ${missing[0].toLowerCase()}.`;
+  } else if (dealInputs.budget.value === "growth") {
+    next = "Offer the Growth Sprint and keep the extra scope explicit.";
+  }
+
+  return {
+    audit,
+    checked: checked.map((check) => check.label),
+    missing,
+    riskNote,
+    score,
+    recommendation,
+    pack,
+    terms,
+    next,
+    budget: dealInputs.budget.value,
+    authority: dealInputs.authority.value,
+    access: dealInputs.access.value,
+    timeline: dealInputs.timeline.value
+  };
+}
+
+function makeDealBrief(data) {
+  const seller = getSellerSettings();
+  const acceptedScope = data.checked.length
+    ? data.checked.map((item) => `- ${item}`).join("\n")
+    : "- No scope guardrails confirmed";
+  const missingScope = data.missing.length
+    ? data.missing.map((item) => `- ${item}`).join("\n")
+    : "- No missing guardrails";
+
+  return [
+    `Deal Desk Brief: ${data.audit.business}`,
+    seller.sellerName ? `Prepared by: ${seller.sellerName}` : "Prepared by: Lead Sprint",
+    "",
+    `Website: ${data.audit.website || "not provided"}`,
+    `Priority score: ${data.audit.score}/100`,
+    `Deal fit score: ${data.score}/100`,
+    `Recommendation: ${data.recommendation}`,
+    `Recommended package: ${data.pack.name}, ${formatter.format(data.pack.price)}, ${data.pack.timeline}`,
+    "",
+    "Protected terms:",
+    data.terms,
+    "",
+    "Confirmed guardrails:",
+    acceptedScope,
+    "",
+    "Open guardrails:",
+    missingScope,
+    "",
+    "Risk note:",
+    data.riskNote || "No unusual risk noted.",
+    "",
+    "Next close move:",
+    data.next,
+    "",
+    "Scope guard to send:",
+    `I can start the ${data.pack.name} after deposit, access, one primary service, and the revision boundary are confirmed. The sprint covers the focused lead path, form routing, tracking checks, and handoff report. It does not include a full redesign, custom CRM build, unlimited revisions, or ongoing support outside the care plan.`
+  ].join("\n");
+}
+
+function renderDealDesk() {
+  const data = buildDealData();
+  dealScore.textContent = data.score;
+  dealRecommendation.textContent = data.recommendation;
+  dealPackage.textContent = data.pack.name;
+  dealTerms.textContent = data.terms;
+  dealNext.textContent = data.next;
+  dealBrief.value = makeDealBrief(data);
+  return data;
 }
 
 function getSavedProspects() {
@@ -1128,11 +1292,13 @@ auditForm.addEventListener("submit", (event) => {
 auditForm.addEventListener("input", () => {
   latestAudit = buildAudit();
   renderAudit(latestAudit);
+  renderDealDesk();
 });
 
 auditForm.addEventListener("change", () => {
   latestAudit = buildAudit();
   renderAudit(latestAudit);
+  renderDealDesk();
 });
 
 copyAuditEmail.addEventListener("click", async () => {
@@ -1159,6 +1325,29 @@ copyProposal.addEventListener("click", async () => {
     proposalText.focus();
     proposalText.select();
     auditNote.textContent = "Clipboard was unavailable. The proposal text is selected.";
+  }
+});
+
+dealForm.addEventListener("input", () => {
+  renderDealDesk();
+  dealNote.textContent = "";
+});
+
+dealForm.addEventListener("change", () => {
+  renderDealDesk();
+  dealNote.textContent = "";
+});
+
+copyDealBrief.addEventListener("click", async () => {
+  renderDealDesk();
+
+  try {
+    await navigator.clipboard.writeText(dealBrief.value);
+    dealNote.textContent = "Deal brief copied.";
+  } catch {
+    dealBrief.focus();
+    dealBrief.select();
+    dealNote.textContent = "Clipboard was unavailable. The deal brief is selected.";
   }
 });
 
